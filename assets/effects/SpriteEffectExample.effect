@@ -1,0 +1,119 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+}%
+
+// 顶点 Shader 片段
+CCProgram vs %{
+  // 定义 float 类型的精度为高精度
+  precision highp float;
+
+  // CC 所有内置的 Shader 变量都必须要要通过 #include 引入该变量的头文件
+  // 所有头文件都在 chunks 目录下
+  // Mac: /Applications/CocosCreator.app/Contents/Resources/engine/cocos2d/renderer/build/chunks
+  // 也可以通过 相对项目assets的相对路径 或者 绝对路径 引用头文件资源
+  #include <cc-global>
+  #include <cc-local>
+
+  // 顶点Shader 从渲染管道里面获取哪些数据
+  // in 用在函数的参数中，表示这个参数是输入的，在函数中改变这个值，并不会影响对调用的函数产生副作用。（相当于C语言的传值），这个是函数参数默认的修饰符
+
+  // 顶点坐标
+  in vec3 a_position;
+
+  // 顶点颜色
+  in vec4 a_color;
+
+  // out 用在函数的参数中，表示该参数是输出参数，值是会改变的
+
+  // 顶点 Shader 片段最后会输出的颜色值
+  // 在片元 Shader 片段中可以接收到这个参数名的值
+  out vec4 v_color;
+
+  // 定义了一个宏，如果使用了纹理那么执行这之间的代码
+  #if USE_TEXTURE
+
+  // 输入的纹理坐标
+  in vec2 a_uv0;
+
+  // 输出的纹理坐标
+  // 在片元 Shader 片段中可以接收到这个参数名的值
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+// 片元着色器片段
+CCProgram fs %{
+  precision highp float;
+  
+  // 这里引入了内置的chunks目录下的 alpha-test 头文件
+  #include <alpha-test>
+
+  // 接收来自上方顶点 Shader 片段的输出参数 v_color
+  // 顶点的颜色
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+
+  // 接收来自上方顶点 Shader 片段的输出参数 v_uv0
+  // 顶点的坐标
+  in vec2 v_uv0;
+
+  // uniform ：一致变量。在着色器执行期间一致变量的值是不变的
+  // 与const常量不同的是，这个值在编译时期是未知的是由着色器外部初始化的
+  // 一致变量在顶点着色器和片段着色器之间是共享的。它也只能在全局范围进行声明。
+  uniform sampler2D texture;
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    // 这个方法来自 alpha-test 头文件
+    // 意思大概为，如果传入的参数vec4 类型的参数o的透明通道值小于传入来的 alphaThreshold 值时，会discard
+    // 使用discard会退出片段着色器，不执行后面的片段着色操作。片段也不会写入帧缓冲区。
+    ALPHA_TEST(o);
+
+    // gl_FragColor = o;
+    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+
+  }
+}%
