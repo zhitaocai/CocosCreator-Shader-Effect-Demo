@@ -1,15 +1,30 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
 
+// YAML 格式的 CC Effect
+// 此部分为声明流程控制清单
 CCEffect %{
+  # techniques 是一个数组
   techniques:
+  # passes 是 techniques 数组的第0项
+  # 同时 passes 也是一个数组，存放渲染管道描述的数组集合
   - passes:
-    - vert: vs
+
+    # passes 数组的第0项，完整的渲染流水线
+    # vert 属性是指定顶点 Shader 片段的名字，如：这里的顶点 Shader 片段的名字为 vs
+    # 根据文档介绍还可以这样子指定片段的入口函数 vs:vert ，那么就代替main函数，vert才是入口函数
+    - vert: vs 
+      # frag 属性是指定片元 Shader 片段的名字，如：这里的片元 Shader 片段的名字为 fs
+      # 根据文档介绍还可以这样子指定片段的入口函数 fs:frag ，那么就代替main函数，frag才是入口函数
       frag: fs
+
+      # 混合模式开启
       blendState:
         targets:
         - blend: true
       rasterizerState:
         cullMode: none
+
+      # properties 列出可以在 Inspector 编辑器编辑的属性
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
@@ -112,8 +127,6 @@ CCProgram fs %{
     // 使用discard会退出片段着色器，不执行后面的片段着色操作。片段也不会写入帧缓冲区。
     ALPHA_TEST(o);
 
-    // gl_FragColor = o;
-    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
-
+    gl_FragColor = o;
   }
 }%
