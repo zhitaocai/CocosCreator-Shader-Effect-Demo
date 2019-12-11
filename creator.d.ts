@@ -13601,6 +13601,16 @@ declare namespace cc {
 	/** !#en Material Asset.
 	!#zh 材质资源类。 */
 	export class Material extends Asset {	
+		/**
+		 * 设置属性
+		 * @param {string} name
+		 * @param {Object} val
+		 */
+		setProperty (name, val, force?); 
+		/**
+		 * 获取属性
+		 */
+		getProperty (name);
 	}	
 	/** !#en cc.EditBox is a component for inputing text, you can use it to gather small amounts of text from users.
 	!#zh EditBox 组件，用于获取用户的输入文本。 */

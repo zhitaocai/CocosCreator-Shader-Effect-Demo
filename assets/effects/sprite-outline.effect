@@ -77,6 +77,7 @@ CCProgram fs %{
 
     ALPHA_TEST(o);
 
-    gl_FragColor = o;
+    // gl_FragColor = o;
+    gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
   }
 }%

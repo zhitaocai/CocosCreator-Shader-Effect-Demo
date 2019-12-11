@@ -78,16 +78,16 @@
         "__id__": 8
       },
       {
-        "__id__": 10
+        "__id__": 11
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 12
+        "__id__": 13
       },
       {
-        "__id__": 13
+        "__id__": 14
       }
     ],
     "_prefab": null,
@@ -177,7 +177,7 @@
       "array": [
         0,
         0,
-        324.7595264191645,
+        554.2562584220408,
         0,
         0,
         0,
@@ -372,6 +372,9 @@
     "_components": [
       {
         "__id__": 9
+      },
+      {
+        "__id__": 10
       }
     ],
     "_prefab": null,
@@ -432,7 +435,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "ca058f99-941b-40f2-b208-d776de59abed"
+        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
       }
     ],
     "_srcBlendFactor": 770,
@@ -455,6 +458,16 @@
     "_id": "c5wu68mipC4qBjTD+u0rFa"
   },
   {
+    "__type__": "93154zKEUxNspOL91D2hv6b",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 8
+    },
+    "_enabled": true,
+    "_id": "4aQ0ah9X1FT4GFrlS5JCi9"
+  },
+  {
     "__type__": "cc.Node",
     "_name": "HelloLabel",
     "_objFlags": 0,
@@ -465,7 +478,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 11
+        "__id__": 12
       }
     ],
     "_prefab": null,
@@ -521,7 +534,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 10
+      "__id__": 11
     },
     "_enabled": true,
     "_materials": [
@@ -572,7 +585,7 @@
     },
     "_enabled": true,
     "label": {
-      "__id__": 11
+      "__id__": 12
     },
     "text": "hello",
     "_id": "aa8ulaDR9JcbRoT7r3pqZq"
