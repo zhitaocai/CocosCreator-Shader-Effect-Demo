@@ -7,7 +7,10 @@
     "__uuid__": "559dcd1e-233b-4e1f-b1da-733c9232f06f"
   },
   "_defines": {
-    "USE_TEXTURE": true
+    "USE_TEXTURE": true,
+    "SHOW_OUT_LINE": true
   },
-  "_props": {}
+  "_props": {
+    "texture": null
+  }
 }
