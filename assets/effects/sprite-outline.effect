@@ -65,9 +65,8 @@ CCProgram fs %{
   uniform sampler2D texture;
   #endif
 
-
-
   #if SHOW_OUT_LINE
+
   uniform Outline {
     // 描边颜色 
     vec4 outlineColor;
@@ -75,9 +74,11 @@ CCProgram fs %{
     float outlineSize;
     // 特别地，必须是 vec4 先于 float 声明
   };
-  #endif
 
   // 获取背面颜色
+  // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineSize 的8个点，求他们的透明度之和
+  // 由此可以得到当前点是否属于图像往八个方向做偏移后得到的放大图区域，并且能得到该点最终透明度值
+  // 最终对应的为图像偏移/放大后的背景区域
   float getBackArea() {
     vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
     vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
@@ -90,6 +91,8 @@ CCProgram fs %{
     float total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
     return clamp(total, 0.0, 1.0);
   }
+
+  #endif
 
   void main () {
     vec4 o = vec4(1, 1, 1, 1);
@@ -107,8 +110,17 @@ CCProgram fs %{
 
     gl_FragColor = o;
 
-    // 正常的rgb + 正常的透明区域 * 背面颜色 * 描边颜色
-    // gl_FragColor = vec4(o.rgb + (1.0 - o.a) * outlineColor.rgb * getBackArea(), 1.0);
-    // gl_FragColor = vec4(o.rgb + outlineColor.rgb * getBackArea(), 1.0);
+    #if SHOW_OUT_LINE
+      // 给放大后的区域填我们的背景颜色（实际为描边颜色）
+      gl_FragColor = outlineColor * getBackArea();
+
+      // 然后在这个区域上，叠加上我们原来图像
+      gl_FragColor = o + (1.0 - o.a) * gl_FragColor;
+
+      // gl_FragColor = o +（1.0 - o.a) * outlineColor * getBackArea();
+
+      // 原来的实现
+      // gl_FragColor = vec4(o.rgb + (1.0 - o.a) * outlineColor.rgb * getBackArea(), 1.0);
+    #endif
   }
 }%

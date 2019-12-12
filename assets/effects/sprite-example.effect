@@ -48,7 +48,7 @@ CCProgram vs %{
   // 顶点坐标
   in vec3 a_position;
 
-  // 顶点颜色
+  // 顶点颜色，实际为对应节点的颜色
   in vec4 a_color;
 
   // out 用在函数的参数中，表示该参数是输出参数，值是会改变的
@@ -120,6 +120,7 @@ CCProgram fs %{
       #endif
     #endif
 
+    // 纹理颜色 和 节点颜色进行混合得出最终颜色
     o *= v_color;
 
     // 这个方法来自 alpha-test 头文件
