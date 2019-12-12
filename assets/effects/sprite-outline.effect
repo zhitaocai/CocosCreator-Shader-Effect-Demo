@@ -13,8 +13,8 @@ CCEffect %{
       properties:
         texture: { value: grey }
         alphaThreshold: { value: 0.5 }
-        outlineColor: { value: [1, 1, 1, 1], editor: { type: color } }
-        outlineSize: { value: 5.0 }
+        outlineColor: { value: [1., .0, .0, 1.], editor: { type: color } }
+        outlineSize: { value: .01 }
 }%
 
 
@@ -77,29 +77,19 @@ CCProgram fs %{
   };
   #endif
 
-  // // 获取背面颜色
-  // float getBackArea() {
-  //   vec4 color_up;
-  //   vec4 color_down;
-  //   vec4 color_left; 
-  //   vec4 color_right; 
-  //   vec4 color_up_left; 
-  //   vec4 color_up_right; 
-  //   vec4 color_down_left; 
-  //   vec4 color_down_right; 
-  //   float total = 0 ; 
-
-  //   color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
-  //   color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
-  //   color_left = texture(texture, v_uv0 - vec2(outlineSize, 0)); 
-  //   color_right = texture(texture, v_uv0 + vec2(outlineSize, 0)); 
-  //   color_up_left = texture(texture, v_uv0 + vec2(outlineSize, -outlineSize)); 
-  //   color_up_right = texture(texture, v_uv0 + vec2(outlineSize, outlineSize)); 
-  //   color_down_left = texture(texture, v_uv0 + vec2(-outlineSize, -outlineSize)); 
-  //   color_down_right = texture(texture, v_uv0 + vec2(-outlineSize, outlineSize)); 
-  //   total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
-  //   return clamp(total, 0.0, 1.0);
-  // }
+  // 获取背面颜色
+  float getBackArea() {
+    vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
+    vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
+    vec4 color_left = texture(texture, v_uv0 - vec2(outlineSize, 0)); 
+    vec4 color_right = texture(texture, v_uv0 + vec2(outlineSize, 0)); 
+    vec4 color_up_left = texture(texture, v_uv0 + vec2(outlineSize, -outlineSize)); 
+    vec4 color_up_right = texture(texture, v_uv0 + vec2(outlineSize, outlineSize)); 
+    vec4 color_down_left = texture(texture, v_uv0 + vec2(-outlineSize, -outlineSize)); 
+    vec4 color_down_right = texture(texture, v_uv0 + vec2(-outlineSize, outlineSize)); 
+    float total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
+    return clamp(total, 0.0, 1.0);
+  }
 
   void main () {
     vec4 o = vec4(1, 1, 1, 1);
@@ -116,6 +106,9 @@ CCProgram fs %{
     ALPHA_TEST(o);
 
     gl_FragColor = o;
-    // gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+
+    // 正常的rgb + 正常的透明区域 * 背面颜色 * 描边颜色
+    // gl_FragColor = vec4(o.rgb + (1.0 - o.a) * outlineColor.rgb * getBackArea(), 1.0);
+    // gl_FragColor = vec4(o.rgb + outlineColor.rgb * getBackArea(), 1.0);
   }
 }%

@@ -11,6 +11,14 @@
     "SHOW_OUT_LINE": true
   },
   "_props": {
-    "texture": null
+    "texture": null,
+    "outlineColor": {
+      "__type__": "cc.Vec4",
+      "x": 1,
+      "y": 1,
+      "z": 0,
+      "w": 1
+    },
+    "outlineSize": 0.01
   }
 }
