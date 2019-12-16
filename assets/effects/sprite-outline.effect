@@ -11,7 +11,7 @@ CCEffect %{
       rasterizerState:
         cullMode: none
       properties:
-        texture: { value: grey }
+        texture: { value: white }
         alphaThreshold: { value: 0.5 }
         outlineColor: { value: [1., .0, .0, 1.], editor: { type: color } }
         outlineSize: { value: .01 }
@@ -75,11 +75,11 @@ CCProgram fs %{
     // 特别地，必须是 vec4 先于 float 声明
   };
 
-  // 获取背面颜色
+  // 将图像往8个方向偏移后，得到一个类放大效果，然后取放大后的图像的透明度，即可得到一个放大后的区域，可以很方便填充（描边）颜色
   // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineSize 的8个点，求他们的透明度之和
   // 由此可以得到当前点是否属于图像往八个方向做偏移后得到的放大图区域，并且能得到该点最终透明度值
   // 最终对应的为图像偏移/放大后的背景区域
-  float getBackArea() {
+  float getBgAlpha() {
     vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
     vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
     vec4 color_left = texture(texture, v_uv0 - vec2(outlineSize, 0)); 
@@ -111,16 +111,22 @@ CCProgram fs %{
     gl_FragColor = o;
 
     #if SHOW_OUT_LINE
-      // 给放大后的区域填我们的背景颜色（实际为描边颜色）
-      gl_FragColor = outlineColor * getBackArea();
+      // 先画背景色
+      vec4 color_dest = outlineColor * getBgAlpha();
 
-      // 然后在这个区域上，叠加上我们原来图像
-      gl_FragColor = o + (1.0 - o.a) * gl_FragColor;
+      // 然后在背景色上方画图案颜色
+      vec4 color_src = o;
 
-      // gl_FragColor = o +（1.0 - o.a) * outlineColor * getBackArea();
+      // 按照这个顺序，源颜色就是图案颜色，目标颜色就是背景色
+      // 所以命名就是 color_src, color_dest
 
-      // 原来的实现
-      // gl_FragColor = vec4(o.rgb + (1.0 - o.a) * outlineColor.rgb * getBackArea(), 1.0);
+      // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
+      // 要在底色上方，画一个图案，图案完全挡住底色，那么最终选择的混合模式如下：
+      // color_src: GL_SRC_ALPHA
+      // color_dest: GL_ONE_MINUS_SRC_ALPHA
+      // 即最终颜色如下：
+      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE_MINUS_SRC_ALPHA
+      gl_FragColor = color_src * color_src.a + color_dest * (1.0 - color_src.a);
     #endif
   }
 }%
