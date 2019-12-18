@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-
+// 描边特效
 CCEffect %{
   techniques:
   - passes:
