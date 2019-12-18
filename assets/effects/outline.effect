@@ -13,8 +13,8 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        outlineColor: { value: [1., .0, .0, 1.], editor: { type: color } }
-        outlineSize: { value: .01 }
+        outlineColor: { value: [1.0, 0.0, 0.0, 1.0], editor: { type: color } }
+        outlineSize: { value: 0.01 }
 }%
 
 
