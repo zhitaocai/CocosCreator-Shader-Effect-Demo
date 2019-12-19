@@ -1,0 +1,133 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+// 外发光特效
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+        outlineColor: { value: [1.0, 1.0, 0.0, 1.0], editor: { type: color } }
+        outlineSize: { value: 0.01 }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if SHOW_OUT_LINE
+
+  uniform Outline {
+    // 描边颜色 
+    vec4 outlineColor;
+    // 描边偏移大小
+    float outlineSize;
+    // 特别地，必须是 vec4 先于 float 声明
+  };
+
+  // 将图像往8个方向偏移后，得到一个类放大效果，然后取放大后的图像的透明度，即可得到一个放大后的区域，可以很方便填充（描边）颜色
+  // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineSize 的8个点，求他们的透明度之和
+  // 由此可以得到当前点是否属于图像往八个方向做偏移后得到的放大图区域，并且能得到该点最终透明度值
+  // 最终对应的为图像偏移/放大后的背景区域
+  float getBgAlpha() {
+    vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
+    vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
+    vec4 color_left = texture(texture, v_uv0 - vec2(outlineSize, 0)); 
+    vec4 color_right = texture(texture, v_uv0 + vec2(outlineSize, 0)); 
+    vec4 color_up_left = texture(texture, v_uv0 + vec2(outlineSize, -outlineSize)); 
+    vec4 color_up_right = texture(texture, v_uv0 + vec2(outlineSize, outlineSize)); 
+    vec4 color_down_left = texture(texture, v_uv0 + vec2(-outlineSize, -outlineSize)); 
+    vec4 color_down_right = texture(texture, v_uv0 + vec2(-outlineSize, outlineSize)); 
+    float total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
+    total *= 0.125;
+    return clamp(total, 0.0, 1.0);
+  }
+
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+
+    #if SHOW_OUT_LINE
+      // 先画背景色
+      vec4 color_dest = outlineColor * getBgAlpha();
+
+      // 然后在背景色上方画图案颜色
+      vec4 color_src = o;
+
+      // 按照这个顺序，源颜色就是图案颜色，目标颜色就是背景色
+      // 所以命名就是 color_src, color_dest
+
+      // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
+      // 要在底色上方，画一个图案，图案完全挡住底色，那么最终选择的混合模式如下：
+      // color_src: GL_SRC_ALPHA
+      // color_dest: GL_ONE_MINUS_SRC_ALPHA
+      // 即最终颜色如下：
+      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE_MINUS_SRC_ALPHA
+      gl_FragColor = color_src * color_src.a + color_dest * (1.0 - color_src.a);
+    #endif
+  }
+}%

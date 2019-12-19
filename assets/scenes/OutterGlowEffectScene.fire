@@ -58,7 +58,7 @@
     "_groupIndex": 0,
     "groupIndex": 0,
     "autoReleaseAssets": false,
-    "_id": "2d2f792f-a40c-49bb-a189-ed176a246e49"
+    "_id": "05055d3f-a334-4b45-abf1-e379e4708284"
   },
   {
     "__type__": "cc.Node",
@@ -508,8 +508,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "描边宽度：",
-    "_N$string": "描边宽度：",
+    "_string": "发光宽度：",
+    "_N$string": "发光宽度：",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -892,7 +892,7 @@
       "__id__": 2
     },
     "component": "",
-    "_componentId": "e1b90/rohdEk4SdmmEZANaD",
+    "_componentId": "408f4mR69xEbpzjsYAGu3vL",
     "handler": "onSideCallBack",
     "customEventData": ""
   },
@@ -1100,7 +1100,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "b878db1a-68e4-460d-95f8-83fdb34c11e6"
       }
     ],
     "_srcBlendFactor": 770,
@@ -1194,7 +1194,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "b878db1a-68e4-460d-95f8-83fdb34c11e6"
       }
     ],
     "_useOriginalSize": false,
@@ -1292,7 +1292,7 @@
     "_id": "4bz2+ak99DBYVlSVIMFGN0"
   },
   {
-    "__type__": "e1b90/rohdEk4SdmmEZANaD",
+    "__type__": "408f4mR69xEbpzjsYAGu3vL",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -1305,6 +1305,6 @@
     "exampleLabel": {
       "__id__": 25
     },
-    "_id": "aa8ulaDR9JcbRoT7r3pqZq"
+    "_id": "5cIwQjksRDKJ/zWSTFHRWJ"
   }
 ]
