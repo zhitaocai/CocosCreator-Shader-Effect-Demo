@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class OutterGlowEffectScene extends cc.Component {
+export default class GlowInnerEffectScene extends cc.Component {
     @property(cc.Node)
     examplesParentNode: cc.Node = null;
 
