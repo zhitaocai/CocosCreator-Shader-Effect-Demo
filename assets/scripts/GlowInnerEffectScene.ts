@@ -26,7 +26,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this.examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("outlineSize", size);
+                material.setProperty("glowColorSize", size);
                 renderComponent.setMaterial(0, material);
             });
         });

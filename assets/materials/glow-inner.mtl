@@ -9,17 +9,9 @@
   "_defines": {
     "USE_TEXTURE": true,
     "USE_ALPHA_TEST": false,
-    "SHOW_OUT_LINE": true
+    "SHOW_INNER_GLOW": true
   },
   "_props": {
-    "texture": null,
-    "outlineColor": {
-      "__type__": "cc.Vec4",
-      "x": 1,
-      "y": 1,
-      "z": 0,
-      "w": 1
-    },
-    "outlineSize": 0.1
+    "texture": null
   }
 }

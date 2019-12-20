@@ -1,5 +1,6 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 外发光特效
+// 内发光特效
+// 原理: 采样周边像素alpha取平均值，叠加发光效果
 CCEffect %{
   techniques:
   - passes:
@@ -13,8 +14,8 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        outlineColor: { value: [1.0, 1.0, 0.0, 1.0], editor: { type: color } }
-        outlineSize: { value: 0.01 }
+        glowColor: { value: [1.0, 1.0, 0.0, 1.0], editor: { type: color } }
+        glowColorSize: { value: 0.01 }
 }%
 
 
@@ -65,49 +66,72 @@ CCProgram fs %{
   uniform sampler2D texture;
   #endif
 
-  #if SHOW_OUT_LINE
+  #if SHOW_INNER_GLOW
 
-  uniform Outline {
-    // 描边颜色 
-    vec4 outlineColor;
-    // 描边偏移大小
-    float outlineSize;
+  uniform glow {
+    // 发光颜色
+    vec4 glowColor;
+    // 发光范围
+    float glowColorSize;
     // 特别地，必须是 vec4 先于 float 声明
   };
 
-  float getAlpha(float size) {
-    vec4 color_up = texture(texture, v_uv0 + vec2(0, size)); 
-    vec4 color_down = texture(texture, v_uv0 - vec2(0, size)); 
-    vec4 color_left = texture(texture, v_uv0 - vec2(size, 0)); 
-    vec4 color_right = texture(texture, v_uv0 + vec2(size, 0)); 
-    vec4 color_up_left = texture(texture, v_uv0 + vec2(size, -size)); 
-    vec4 color_up_right = texture(texture, v_uv0 + vec2(size, size)); 
-    vec4 color_down_left = texture(texture, v_uv0 + vec2(-size, -size)); 
-    vec4 color_down_right = texture(texture, v_uv0 + vec2(-size, size)); 
-    float total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
-    return step(0.000000001, total);
+  /**
+   * 获取指定角度方向，距离为xxx的像素的透明度
+   *
+   * @param angle 角度 [0.0, 360.0]
+   * @param distance 距离 [0.0, 1.0]
+   *
+   * @return alpha [0.0, 1.0]
+   */
+  float getColorAlpha(float angle, float distance) {
+    // 角度转弧度，公式为：弧度 = 角度 * (pi / 180)
+    float radian = angle * 0.01745329252; // 这个浮点数是 pi / 180
+    vec4 color = texture(texture, v_uv0 + vec2(distance * cos(radian), distance * sin(radian))); 
+    return 1.0 - color.a;
   }
 
-  // 将图像往8个方向偏移后，得到一个类放大效果，然后取放大后的图像的透明度，即可得到一个放大后的区域，可以很方便填充（描边）颜色
-  // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineSize 的8个点，求他们的透明度之和
-  // 由此可以得到当前点是否属于图像往八个方向做偏移后得到的放大图区域，并且能得到该点最终透明度值
-  // 最终对应的为图像偏移/放大后的背景区域
-  float getBgAlpha() {
-    vec4 color_cur = texture(texture, v_uv0);
-    float alpha = step(0.000000001, color_cur.a);
-    if (alpha > 0.000000001) {
-      return 1.0;
-    } else {
-      float total = 0.0;
-      for (float i = 0.0; i <= 1.0; i += 0.01) {
-        total += getAlpha(outlineSize * i);
-      }
-      total *= 0.01;
-      return clamp(total, 0.0, 1.0);
-    }
+  /**
+   * 获取指定距离的周边像素的透明度平均值
+   *
+   * @param distance 距离 [0.0, 1.0]
+   *
+   * @return average alpha [0.0, 1.0]
+   */
+  float getDistanceAverageAlpha(float distance) {
+    float totalAlpha = 0.0;
+    totalAlpha += getColorAlpha(0.0, distance);
+    totalAlpha += getColorAlpha(30.0, distance);
+    totalAlpha += getColorAlpha(60.0, distance);
+    totalAlpha += getColorAlpha(90.0, distance);
+    totalAlpha += getColorAlpha(120.0, distance);
+    totalAlpha += getColorAlpha(150.0, distance);
+    totalAlpha += getColorAlpha(180.0, distance);
+    totalAlpha += getColorAlpha(210.0, distance);
+    totalAlpha += getColorAlpha(240.0, distance);
+    totalAlpha += getColorAlpha(270.0, distance);
+    totalAlpha += getColorAlpha(300.0, distance);
+    totalAlpha += getColorAlpha(330.0, distance);
+    return totalAlpha * (1.0 / 12.0);
   }
 
-  
+  /**
+   * 获取发光的透明度
+   */
+  float getGlowAlpha() {
+    float totalAlpha = 0.0;
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.1);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.2);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.3);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.4);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.5);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.6);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.7);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.8);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 0.9);
+    totalAlpha += getDistanceAverageAlpha(glowColorSize * 1.0);
+    return totalAlpha * (1.0 / 10.0);
+  }
 
   #endif
 
@@ -127,24 +151,27 @@ CCProgram fs %{
 
     gl_FragColor = o;
 
-    #if SHOW_OUT_LINE
-      // 先画背景色
-      vec4 color_dest = outlineColor * getBgAlpha();
+    #if SHOW_INNER_GLOW
+      // 先画图案
+      vec4 color_dest = o;
 
-      // 然后在背景色上方画图案颜色
-      vec4 color_src = o;
+      // 然后在图案上叠加内发光 
+      vec4 color_src = glowColor * getGlowAlpha();
 
-      // 按照这个顺序，源颜色就是图案颜色，目标颜色就是背景色
+      // 按照这个顺序，源颜色就是内发光颜色，目标颜色就是图案颜色色 
       // 所以命名就是 color_src, color_dest
 
       // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
-      // 要在底色上方，画一个图案，图案完全挡住底色，那么最终选择的混合模式如下：
+      // 要在图案上方，叠加一个内发光，将两者颜色混合起来，那么最终选择的混合模式如下：
       // color_src: GL_SRC_ALPHA
       // color_dest: GL_ONE_MINUS_SRC_ALPHA
       // 即最终颜色如下：
       // color_src * GL_SRC_ALPHA + color_dest * GL_ONE_MINUS_SRC_ALPHA
       gl_FragColor = color_src * color_src.a + color_dest * (1.0 - color_src.a);
-      // gl_FragColor = color_dest;
+      // gl_FragColor = color_src  + color_dest * (1.0 - color_src.a);
+      // gl_FragColor = color_src * (1.0 - color_src.a) + color_dest * color_src.a;
+      // gl_FragColor = color_src;
+      // gl_FragColor = color_dest * color_dest.a + color_src * (1.0 - color_dest.a);
     #endif
   }
 }%
