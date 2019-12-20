@@ -12,6 +12,14 @@
     "SHOW_INNER_GLOW": true
   },
   "_props": {
-    "texture": null
+    "texture": null,
+    "glowColor": {
+      "__type__": "cc.Vec4",
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "w": 1
+    },
+    "glowColorSize": 0.5
   }
 }
