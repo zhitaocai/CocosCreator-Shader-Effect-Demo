@@ -15,11 +15,11 @@
     "texture": null,
     "glowColor": {
       "__type__": "cc.Vec4",
-      "x": 0,
+      "x": 1,
       "y": 0,
-      "z": 1,
+      "z": 0,
       "w": 1
     },
-    "glowColorSize": 0.5
+    "glowColorSize": 0.1
   }
 }
