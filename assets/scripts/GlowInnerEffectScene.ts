@@ -10,11 +10,11 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
-        this._redSlider = cc.find("Canvas/SliderLayouts/RedSlider/Slider").getComponent(cc.Slider);
-        this._greenSlider = cc.find("Canvas/SliderLayouts/GreenSlider/Slider").getComponent(cc.Slider);
-        this._blueSlider = cc.find("Canvas/SliderLayouts/BlueSlider/Slider").getComponent(cc.Slider);
-        this._alphaSlider = cc.find("Canvas/SliderLayouts/AlphaSlider/Slider").getComponent(cc.Slider);
-        this._widthSlider = cc.find("Canvas/SliderLayouts/WidthSlider/Slider").getComponent(cc.Slider);
+        this._redSlider = cc.find("Canvas/SliderLayouts/ColorRedSliderPrefab/Slider").getComponent(cc.Slider);
+        this._greenSlider = cc.find("Canvas/SliderLayouts/ColorGreenSliderPrefab/Slider").getComponent(cc.Slider);
+        this._blueSlider = cc.find("Canvas/SliderLayouts/ColorBlueSliderPrefab/Slider").getComponent(cc.Slider);
+        this._alphaSlider = cc.find("Canvas/SliderLayouts/ColorAlphaSliderPrefab/Slider").getComponent(cc.Slider);
+        this._widthSlider = cc.find("Canvas/SliderLayouts/GlowWidthSliderPrefab/Slider").getComponent(cc.Slider);
         this._examplesParentNode = cc.find("Canvas/Examples");
     }
 
@@ -41,7 +41,7 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _onSliderChanged() {
         this._updateRenderComponentOutterGlowMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
-            glowColorSize: this._widthSlider.progress / 100
+            glowColorSize: this._widthSlider.progress * 0.01
         });
     }
 
