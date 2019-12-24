@@ -14,8 +14,31 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        glowColor: { value: [1.0, 1.0, 0.0, 1.0], editor: { type: color , displayName: "发光颜色" } } 
-        glowColorSize: { value: 0.01, editor: {displayName: "发光宽度（百分比）" } }
+
+        # 自定义参数
+        # 发光颜色
+        glowColor: { 
+          value: [1.0, 1.0, 0.0, 1.0], 
+          editor: { 
+            type: color, 
+            displayName: "发光颜色" 
+          } 
+        } 
+        # 发光宽度
+        glowColorSize: { 
+          value: 0.01,
+          editor: {
+            displayName: "发光宽度（百分比）"
+          }
+        }
+        # 发光透明度阈值
+        #只有超过这个透明度的点才会发光，一般用于解决图像边缘存在渐变透明的时，决定哪些透明度的边缘点发光，具体可以操作一下就知道
+        glowThreshold: {
+          value: 0.1,
+          editor: {
+            displayName: "发光阈值（百分比）"
+          }
+        }
 }%
 
 
@@ -73,6 +96,8 @@ CCProgram fs %{
     vec4 glowColor;
     // 发光范围
     float glowColorSize;
+    // 发光阈值
+    float glowThreshold;
     // 特别地，必须是 vec4 先于 float 声明
   };
 
@@ -113,8 +138,7 @@ CCProgram fs %{
     totalAlpha += getColorAlpha(270.0, dist);
     totalAlpha += getColorAlpha(300.0, dist);
     totalAlpha += getColorAlpha(330.0, dist);
-    // 1 / 12 = 0.08333
-    return totalAlpha * 0.0833; 
+    return totalAlpha * 0.0833; // 1 / 12 = 0.08333
   }
 
   /**
@@ -171,18 +195,18 @@ CCProgram fs %{
       // 目标颜色（图像）
       vec4 color_dest = o;
 
-      // 源颜色（内发光）
       float alpha = getGlowAlpha();
       // 此时我们得到的是内部透明度为1，靠近边缘的为接近0的透明度
       // 而内发光恰恰相反，是需要内部透明度为0，靠近边缘的接近1的透明度
       // 因此我们需要翻转一下透明度
       // 如果图像边缘有大量渐变，那么如果我们取 0.0 的话，那么可能边缘会出现锯齿
       // 因此我们取0.1作为翻转临界值，0.1也不是绝对的，可以自行修改这里的值
-      if (alpha > 0.1) {
+      if (alpha > glowThreshold) {
         alpha = 1.0 - alpha;
         // 给点调料，让靠近边缘的更加亮
         alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
       }
+      // 源颜色（内发光）
       vec4 color_src = glowColor * alpha;
 
       // 按照这个顺序，源颜色就是内发光颜色，目标颜色就是图案颜色色 

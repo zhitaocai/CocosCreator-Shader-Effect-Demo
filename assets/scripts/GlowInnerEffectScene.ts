@@ -7,6 +7,7 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _blueSlider: cc.Slider = null;
     private _alphaSlider: cc.Slider = null;
     private _widthSlider: cc.Slider = null;
+    private _glowThresholdSlider: cc.Slider = null;
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
@@ -15,6 +16,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._blueSlider = cc.find("Canvas/Content/SliderLayouts/ColorBlueSliderPrefab/Slider").getComponent(cc.Slider);
         this._alphaSlider = cc.find("Canvas/Content/SliderLayouts/ColorAlphaSliderPrefab/Slider").getComponent(cc.Slider);
         this._widthSlider = cc.find("Canvas/Content/SliderLayouts/GlowWidthSliderPrefab/Slider").getComponent(cc.Slider);
+        this._glowThresholdSlider = cc.find("Canvas/Content/SliderLayouts/GlowThresholdSliderPrefab/Slider").getComponent(cc.Slider);
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
     }
 
@@ -24,6 +26,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._blueSlider.node.on("slide", this._onSliderChanged, this);
         this._alphaSlider.node.on("slide", this._onSliderChanged, this);
         this._widthSlider.node.on("slide", this._onSliderChanged, this);
+        this._glowThresholdSlider.node.on("slide", this._onSliderChanged, this);
     }
 
     onDisable() {
@@ -32,6 +35,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._blueSlider.node.off("slide", this._onSliderChanged, this);
         this._alphaSlider.node.off("slide", this._onSliderChanged, this);
         this._widthSlider.node.off("slide", this._onSliderChanged, this);
+        this._glowThresholdSlider.node.off("slide", this._onSliderChanged, this);
     }
 
     start() {
@@ -41,7 +45,8 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _onSliderChanged() {
         this._updateRenderComponentOutterGlowMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
-            glowColorSize: this._widthSlider.progress * 0.01
+            glowColorSize: this._widthSlider.progress * 0.01,
+            glowThreshold: this._glowThresholdSlider.progress * 0.01
         });
     }
 
@@ -62,12 +67,18 @@ export default class GlowInnerEffectScene extends cc.Component {
          * 发光颜色 [0.0, 1.0]
          */
         glowColor: cc.Vec4;
+
+        /**
+         * 发光阈值 [0.0, 1.0]
+         */
+        glowThreshold: number;
     }) {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
                 material.setProperty("glowColorSize", param.glowColorSize);
                 material.setProperty("glowColor", param.glowColor);
+                material.setProperty("glowThreshold", param.glowThreshold);
                 renderComponent.setMaterial(0, material);
             });
         });

@@ -20,6 +20,7 @@
       "z": 0,
       "w": 1
     },
-    "glowColorSize": 0.1
+    "glowColorSize": 0.2,
+    "glowThreshold": 0.1
   }
 }
