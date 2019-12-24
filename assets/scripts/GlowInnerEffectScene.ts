@@ -10,12 +10,12 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
-        this._redSlider = cc.find("Canvas/SliderLayouts/ColorRedSliderPrefab/Slider").getComponent(cc.Slider);
-        this._greenSlider = cc.find("Canvas/SliderLayouts/ColorGreenSliderPrefab/Slider").getComponent(cc.Slider);
-        this._blueSlider = cc.find("Canvas/SliderLayouts/ColorBlueSliderPrefab/Slider").getComponent(cc.Slider);
-        this._alphaSlider = cc.find("Canvas/SliderLayouts/ColorAlphaSliderPrefab/Slider").getComponent(cc.Slider);
-        this._widthSlider = cc.find("Canvas/SliderLayouts/GlowWidthSliderPrefab/Slider").getComponent(cc.Slider);
-        this._examplesParentNode = cc.find("Canvas/Examples");
+        this._redSlider = cc.find("Canvas/Content/SliderLayouts/ColorRedSliderPrefab/Slider").getComponent(cc.Slider);
+        this._greenSlider = cc.find("Canvas/Content/SliderLayouts/ColorGreenSliderPrefab/Slider").getComponent(cc.Slider);
+        this._blueSlider = cc.find("Canvas/Content/SliderLayouts/ColorBlueSliderPrefab/Slider").getComponent(cc.Slider);
+        this._alphaSlider = cc.find("Canvas/Content/SliderLayouts/ColorAlphaSliderPrefab/Slider").getComponent(cc.Slider);
+        this._widthSlider = cc.find("Canvas/Content/SliderLayouts/GlowWidthSliderPrefab/Slider").getComponent(cc.Slider);
+        this._examplesParentNode = cc.find("Canvas/Content/Examples");
     }
 
     onEnable() {
