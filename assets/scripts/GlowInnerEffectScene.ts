@@ -77,8 +77,9 @@ export default class GlowInnerEffectScene extends cc.Component {
         let realGlowWidthProgress = this._glowWidthSlider.progress * 0.1;
         this._glowWidthSliderLabel.string = `${realGlowWidthProgress.toFixed(2)}`;
 
-        // 这里为约束一下值发光阈值值在 [0.0, 0.2] 因为 0.2+ 之后的效果可能就是其他效果，也可以自己修改这里
-        let realGlowThresholdProgress = this._glowThresholdSlider.progress * 0.2;
+        // 这里为约束一下值发光阈值值在 [0.0, 0.5] 因为 0.5+ 之后的效果可能就是其他效果，也可以自己修改这里
+        // let realGlowThresholdProgress = this._glowThresholdSlider.progress * 0.5;
+        let realGlowThresholdProgress = this._glowThresholdSlider.progress;
         this._glowThresholdSliderLabel.string = `${realGlowThresholdProgress.toFixed(2)}`;
 
         // 更新材质
