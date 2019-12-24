@@ -19,16 +19,17 @@ CCEffect %{
         # 发光颜色
         glowColor: { 
           value: [1.0, 1.0, 0.0, 1.0], 
-          editor: { 
-            type: color, 
-            displayName: "发光颜色" 
+          inspector: { 
+            type: color,
+            tooltip: "发光颜色"
           } 
         } 
         # 发光宽度
         glowColorSize: { 
           value: 0.01,
-          editor: {
-            displayName: "发光宽度（百分比）"
+          inspector: {
+            tooltip: "发光宽度",
+            range: [0.0, 1.0],
           }
         }
         # 发光透明度阈值
@@ -36,8 +37,9 @@ CCEffect %{
         #   一般用于解决图像边缘存在渐变透明的时，决定超过这个透明度阈值的边缘点才点发光，具体可以操作一下
         glowThreshold: {
           value: 0.1,
-          editor: {
-            displayName: "发光阈值（百分比）"
+          inspector: {
+            tooltip: "发光阈值",
+            range: [0.0, 1.0]
           }
         }
 }%
