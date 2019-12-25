@@ -171,7 +171,7 @@
       "array": [
         0,
         0,
-        418.2902700278839,
+        351.60631393648214,
         0,
         0,
         0,
@@ -5183,8 +5183,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 384.0000000000002,
-      "height": 270
+      "width": 384,
+      "height": 518
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5195,8 +5195,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -132.038,
-        679.166,
+        288,
+        0,
         0,
         0,
         0,
@@ -5228,7 +5228,7 @@
       "__id__": 114
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 116
@@ -5258,7 +5258,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -30,
+        229,
         0,
         0,
         0,
@@ -5351,8 +5351,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -1005.506,
         0,
+        34,
         0,
         0,
         0,
@@ -5510,7 +5510,7 @@
       "__id__": 114
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 122
@@ -5540,7 +5540,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -559,
+        -156,
         0,
         0,
         0,
@@ -5696,7 +5696,7 @@
       "__id__": 114
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 126
@@ -5713,8 +5713,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 167.5,
-      "height": 33.33
+      "width": 201,
+      "height": 48
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5726,7 +5726,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -466.665,
+        -235,
         0,
         0,
         0,
@@ -5766,8 +5766,8 @@
     "_useOriginalSize": false,
     "_string": "BM Font",
     "_N$string": "BM Font",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 48,
+    "_lineHeight": 48,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "4c95de7e-8cca-47bf-a446-47b7594e0992"
@@ -5793,11 +5793,11 @@
     "alignMode": 1,
     "_target": null,
     "_alignFlags": 42,
-    "_left": 0.16246041666666655,
-    "_right": 420.0379999999999,
+    "_left": 0.6,
+    "_right": 0,
     "_top": 48,
     "_bottom": 48,
-    "_verticalCenter": 679.166,
+    "_verticalCenter": 0,
     "_horizontalCenter": 0,
     "_isAbsLeft": false,
     "_isAbsRight": true,
@@ -5819,8 +5819,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 384.0000000000002,
-      "height": 270
+      "width": 384,
+      "height": 518
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -5836,7 +5836,7 @@
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
     "_N$spacingX": 48,
-    "_N$spacingY": 60,
+    "_N$spacingY": 30,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
     "_N$affectedByScale": false,

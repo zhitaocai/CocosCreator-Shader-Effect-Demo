@@ -92,8 +92,8 @@ CCProgram vs %{
     // // y轴压缩
     // v_uv0 = a_uv0 * vec2(1.0, 2.0);
 
-    // v_uv0 = clamp(a_uv0 + vec2(0.5, 0.0), vec2(0.0, 0.0), vec2(1.0, 1.0));
-    // v_uv0 = a_uv0 * vec2(2.0, 2.0) + vec2(-0.5, -0.5);
+    // 先缩小一倍，然后在移动回去中间
+    // v_uv0 = a_uv0 * 2.0 - 0.5;
     #endif
 
     v_color = a_color;
