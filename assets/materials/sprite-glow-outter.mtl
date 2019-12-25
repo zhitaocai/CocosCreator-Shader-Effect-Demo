@@ -20,7 +20,7 @@
       "b": 0,
       "a": 255
     },
-    "glowColorSize": 0.2,
+    "glowColorSize": 0.15,
     "glowThreshold": 1
   }
 }

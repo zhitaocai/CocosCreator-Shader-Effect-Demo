@@ -26,17 +26,16 @@ CCEffect %{
         } 
         # 发光宽度
         glowColorSize: { 
-          value: 0.01,
+          value: 0.15,
           inspector: {
             tooltip: "发光宽度",
             range: [0.0, 1.0],
           }
         }
         # 发光透明度阈值
-        #   只有超过这个透明度的点才会发光
-        #   一般用于解决图像边缘存在渐变透明的时，决定超过这个透明度阈值的边缘点才点发光，具体可以操作一下
+        #   只有小于等于这个透明度的点才会发光
         glowThreshold: {
-          value: 0.1,
+          value: 1.0,
           inspector: {
             tooltip: "发光阈值",
             range: [0.0, 1.0]
@@ -142,6 +141,15 @@ CCProgram fs %{
     totalAlpha += getColorAlpha(300.0, dist);
     totalAlpha += getColorAlpha(330.0, dist);
     return totalAlpha * 0.0833; // 1 / 12 = 0.08333
+
+    // // for 循环写法据说耗性能
+    // float totalAlpha = 0.0;
+    // const float count = 12.0;
+    // const float angle  = 360.0 / count;
+    // for (float i = 0.0; i < count; i += 1.0) {
+    //   totalAlpha += getColorAlpha(angle * i, dist) ;
+    // }
+    // return totalAlpha / count;
   }
 
   /**
@@ -201,20 +209,24 @@ CCProgram fs %{
       // 此时我们得到的是内部透明度为1，靠近边缘的为接近0的透明度，其他位置为0的透明度
       float alpha = getGlowAlpha();
 
-      // // 而外发光是从边缘开始的，那么什么算是边缘呢？
-      // // 一般图像边缘是存在渐变，即从图像内 1.0-> 0.0 图像外，那么发光边缘我们可以这样子定义
-      // // 当该点的透明度小于一个阈值，那么我们就当该点为一个发光点
-      // if (alpha <= glowThreshold) {
+      // 而外发光是从边缘开始的，那么什么算是边缘呢？
+      // 一般图像边缘是存在渐变，即从图像内 1.0-> 0.0 图像外，那么发光边缘我们可以这样子定义
+      // 当该点的透明度小于一个阈值，那么我们就当该点为一个发光点
+      if (alpha <= glowThreshold) {
+        // 然后以阈值作为标量，重新将透明度归一化
+        alpha = alpha / glowThreshold;
 
-      //   // 给点调料，让靠近边缘的更加亮
-      //   alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
-      // } else {
-      //   // 然后这里大于阈值的基本就是便是图像本身，不需要发光，那么将发光透明度置为0
-      //   alpha = 0.0;
-      // }
+        // 给点调料，让靠近边缘的更加亮
+        alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+      } else {
+        // 然后这里大于阈值的基本就是便是图像本身，不需要发光，那么将发光透明度置为0
+        alpha = 0.0;
+      }
 
-      // 给点调料，让靠近边缘的更加亮
-      alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+      // 忽略阈值，直接处理
+      // // 给点调料，让靠近边缘的更加亮
+      // alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+
       // 外发光颜色
       vec4 color_dest = glowColor * alpha;
       vec4 color_src = o;
