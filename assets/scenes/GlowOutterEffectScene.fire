@@ -171,7 +171,7 @@
       "array": [
         0,
         0,
-        351.60631393648214,
+        407.8979651824706,
         0,
         0,
         0,
@@ -5843,14 +5843,14 @@
     "_id": "ff9z0nF9BGm5zFMuGhj1jt"
   },
   {
-    "__type__": "a7491V7JIdEJbj1Nb3ChLNF",
+    "__type__": "68622NlRNJFN4QrXlFCQMe/",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 5
     },
     "_enabled": true,
-    "_id": "1e3JBAHdBB05hQBmOh155Q"
+    "_id": "028spxa+pEIKGM/iuM4XlC"
   },
   {
     "__type__": "cc.Canvas",
