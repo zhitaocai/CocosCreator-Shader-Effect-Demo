@@ -23,6 +23,10 @@ export default class GlowOutterEffectScene extends cc.Component {
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
+        // 关闭动态合图
+        cc.dynamicAtlasManager.enabled = false;
+
+        // cc.dynamicAtlasManager.showDebug(true);
         this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
         this._redSliderLabel = cc.find("Canvas/Content/Sliders/ColorRedSlider/ValueLabel").getComponent(cc.Label);
 
