@@ -1633,7 +1633,7 @@ declare namespace cc {
 	var v4 = cc.v4({x: 100, y: 100, z: 0});
 	``` 
 	*/
-	export function v4(x?: number|any, y?: number, z?: number): Vec4;	
+	export function v4(x?: number|any, y?: number, z?: number, w?: number): Vec4;	
 	export var dynamicAtlasManager: DynamicAtlasManager;	
 	/** !#en
 	 cc.NodePool is the cache pool designed for node type.<br/>
