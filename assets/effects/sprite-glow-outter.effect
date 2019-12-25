@@ -1,6 +1,6 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 内发光特效
-// 原理: 采样周边像素alpha取平均值，叠加发光效果
+// 外发光特效
+// 原理：采样周边像素alpha取平均值，给外部加发光效果(1-col.a可避免内部发光)
 CCEffect %{
   techniques:
   - passes:
@@ -92,7 +92,7 @@ CCProgram fs %{
   uniform sampler2D texture;
   #endif
 
-  #if SHOW_INNER_GLOW
+  #if SHOW_OUTTER_GLOW
 
   uniform glow {
     // 发光颜色
@@ -127,8 +127,6 @@ CCProgram fs %{
    * @return average alpha [0.0, 1.0]
    */
   float getAverageAlpha(float dist) {
-   
-
     float totalAlpha = 0.0;
     // 以30度为一个单位，那么「周边一圈」就由0到360度中共计12个点的组成
     totalAlpha += getColorAlpha(0.0, dist);
@@ -155,14 +153,14 @@ CCProgram fs %{
       return 0.0;
     }
 
-    // 因为我们是要做内发光，所以如果点本来是透明的或者接近透明的
-    // 那么就意味着这个点是图像外的透明点或者图像内透明点（如空洞）之类的
-    // 内发光的话，这些透明点我们不用处理，让它保持原样，否则就是会有内描边或者一点扩边的效果
-    // 同时也是提前直接结束，减少计算量
-    vec4 srcColor = texture(texture, v_uv0);
-    if (srcColor.a <= glowThreshold) {
-      return srcColor.a;
-    } 
+    // // 因为我们是要做内发光，所以如果点本来是透明的或者接近透明的
+    // // 那么就意味着这个点是图像外的透明点或者图像内透明点（如空洞）之类的
+    // // 内发光的话，这些透明点我们不用处理，让它保持原样，否则就是会有内描边或者一点扩边的效果
+    // // 同时也是提前直接结束，减少计算量
+    // vec4 srcColor = texture(texture, v_uv0);
+    // if (srcColor.a <= glowThreshold) {
+    //   return srcColor.a;
+    // } 
 
     // 将传入的指定距离，平均分成10圈，求出每一圈的平均透明度，
     // 然后求和取平均值，那么就可以得到该点的平均透明度
@@ -198,42 +196,42 @@ CCProgram fs %{
 
     gl_FragColor = o;
 
-    #if SHOW_INNER_GLOW
-      // 目标颜色（图像）
-      vec4 color_dest = o;
-
+    #if SHOW_OUTTER_GLOW
       // 获取发光透明度
       // 此时我们得到的是内部透明度为1，靠近边缘的为接近0的透明度，其他位置为0的透明度
       float alpha = getGlowAlpha();
 
-      // 而内发光是从边缘开始的，那么什么算是边缘呢？
-      // 如果图像边缘有大量渐变，那么如果我们取大于 0.0 点就算是图像内的话，那么可能边缘会出现锯齿
-      // 因此为了确定边缘，引入了发光阈值，我们只需要比较一下发光阈值就可以，大于发光阈值的点都是（图像内）发光点
-      if (alpha > glowThreshold) {
+      // // 而外发光是从边缘开始的，那么什么算是边缘呢？
+      // // 一般图像边缘是存在渐变，即从图像内 1.0-> 0.0 图像外，那么发光边缘我们可以这样子定义
+      // // 当该点的透明度小于一个阈值，那么我们就当该点为一个发光点
+      // if (alpha <= glowThreshold) {
 
-        // 内发光是从边缘发光的，是需要内部透明度为0，靠近边缘的接近1的透明度
-        // 因此我们需要翻转一下透明度
-        alpha = 1.0 - alpha;
+      //   // 给点调料，让靠近边缘的更加亮
+      //   alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+      // } else {
+      //   // 然后这里大于阈值的基本就是便是图像本身，不需要发光，那么将发光透明度置为0
+      //   alpha = 0.0;
+      // }
 
-        // 给点调料，让靠近边缘的更加亮
-        alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
-      }
-      // 源颜色（内发光）
-      vec4 color_src = glowColor * alpha;
+      // 给点调料，让靠近边缘的更加亮
+      alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+      // 外发光颜色
+      vec4 color_dest = glowColor * alpha;
+      vec4 color_src = o;
 
-      // 按照这个顺序，源颜色就是内发光颜色，目标颜色就是图案颜色色 
-      // 所以命名就是 color_src, color_dest
-
-      // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
-      // 要在图案上方，叠加一个内发光，将两者颜色混合起来，那么最终选择的混合模式如下：
+      // 本次我们将先画外发光作为背景，然后在上方放图像
       //
-      // （内发光）color_src: GL_SRC_ALPHA
-      // （原图像）color_dest: GL_ONE
+      // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
+      //
+      // 最终选择的混合模式如下：
+      //
+      // （原图像）color_src: GL_SRC_ALPHA
+      // （外发光）color_dest: GL_ONE_MINUS_SRC_ALPHAA
       // 
       // 即最终颜色如下：
-      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE
+      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE_MINUS_SRC_ALPHAA
 
-      gl_FragColor = color_src * color_src.a + color_dest;
+      gl_FragColor = color_src * color_src.a + color_dest * (1.0 - color_src.a);
     #endif
   }
 }%

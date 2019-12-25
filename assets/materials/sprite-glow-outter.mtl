@@ -9,7 +9,7 @@
   "_defines": {
     "USE_TEXTURE": true,
     "USE_ALPHA_TEST": false,
-    "SHOW_INNER_GLOW": true
+    "SHOW_OUTTER_GLOW": true
   },
   "_props": {
     "texture": null,
@@ -21,6 +21,6 @@
       "a": 255
     },
     "glowColorSize": 0.2,
-    "glowThreshold": 0.1
+    "glowThreshold": 1
   }
 }
