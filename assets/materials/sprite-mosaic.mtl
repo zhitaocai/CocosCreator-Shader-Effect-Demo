@@ -1,0 +1,17 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "9638979d-62b3-4e5b-adea-7ad706e66e65"
+  },
+  "_defines": {
+    "USE_TEXTURE": true,
+    "USE_MOSAIC": true
+  },
+  "_props": {
+    "xBlockCount": 30,
+    "yBlockCount": 30
+  }
+}
