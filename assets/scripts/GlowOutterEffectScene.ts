@@ -26,7 +26,6 @@ export default class GlowOutterEffectScene extends cc.Component {
         // 关闭动态合图
         cc.dynamicAtlasManager.enabled = false;
 
-        // cc.dynamicAtlasManager.showDebug(true);
         this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
         this._redSliderLabel = cc.find("Canvas/Content/Sliders/ColorRedSlider/ValueLabel").getComponent(cc.Label);
 
@@ -87,7 +86,7 @@ export default class GlowOutterEffectScene extends cc.Component {
         this._glowThresholdSliderLabel.string = `${realGlowThresholdProgress.toFixed(2)}`;
 
         // 更新材质
-        this._updateRenderComponentOutterGlowMaterial({
+        this._updateRenderComponentMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
             glowColorSize: realGlowWidthProgress,
             glowThreshold: realGlowThresholdProgress
@@ -101,7 +100,7 @@ export default class GlowOutterEffectScene extends cc.Component {
      * 2. 给材质的 unitform 变量赋值
      * 3. 重新将材质赋值回去
      */
-    private _updateRenderComponentOutterGlowMaterial(param: {
+    private _updateRenderComponentMaterial(param: {
         /**
          * 发光宽度 [0.0, 1.0]
          */
