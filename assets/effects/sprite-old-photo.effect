@@ -18,6 +18,14 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
+        # 老化程度
+        oldLevel: {
+          value: 1.0,
+          inspector: {
+            tooltip: "老化程度",
+            range: [0.0, 1.0]
+          }
+        }
 }%
 
 
@@ -69,6 +77,18 @@ CCProgram fs %{
   #endif
 
   #if USE_OLD_PHOTO
+  uniform OldPhoto {
+    // 老化程度
+    float oldLevel;
+  }
+
+  /**
+   * 获取老化颜色
+   * 
+   * @param color 原始颜色 
+   *
+   * @return 老化后的颜色
+   */
   vec4 getOldPhotoColor(vec4 color) {
     float r = 0.393 * color.r + 0.769 * color.g + 0.189 * color.b; 
     float g = 0.349 * color.r + 0.686 * color.g + 0.168 * color.b; 
@@ -92,7 +112,10 @@ CCProgram fs %{
     ALPHA_TEST(o);
 
     #if USE_OLD_PHOTO
-    o = getOldPhotoColor(o);
+    vec4 srcColor = o;
+    vec4 oldColor = getOldPhotoColor(srcColor);
+
+    o = srcColor + (oldColor - srcColor) * oldLevel;
     #endif
     gl_FragColor = o;
   }
