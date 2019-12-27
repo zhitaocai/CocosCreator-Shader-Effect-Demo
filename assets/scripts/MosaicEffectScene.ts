@@ -37,10 +37,10 @@ export default class MosaicEffectScene extends cc.Component {
     }
 
     private _onSliderChanged() {
-        let xMosaicCount = Math.round(this._xMosaicCountSlider.progress * 100);
+        let xMosaicCount = Math.round(this._xMosaicCountSlider.progress * 300);
         this._xMosaicCountSliderLabel.string = `${xMosaicCount}`;
 
-        let yMosaicCount = Math.round(this._yMosaicCountSlider.progress * 100);
+        let yMosaicCount = Math.round(this._yMosaicCountSlider.progress * 300);
         this._yMosaicCountSliderLabel.string = `${yMosaicCount}`;
 
         // 更新材质
