@@ -45,7 +45,7 @@
 
 ps：支持扫码催更哦🤣🤣🤣👇👇👇👇
 
-![](static/pay.png)
+![](static/PAY.png)
 
 
 ## LICENSE
