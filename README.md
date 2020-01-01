@@ -4,7 +4,7 @@
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
-## 一、项目说明
+## 项目说明
 
 1. 此项目为我在学习过程中的一些分享和实现，因此项目名字以 **`Demo`** 为后缀。
 2. 项目重点在于 **「渔」**，不在于 **「鱼」** 。
@@ -12,7 +12,7 @@
 
 那么现在，我们先来轻松地看下有哪些特效效果吧~
 
-## 二、特效预览
+## 特效预览
 
 ### 内发光（[实现原理及使用说明]() 编写中... ，催更麻烦移步一下到文末 **激活作者** 😜）
 
@@ -26,11 +26,27 @@
 
 ![](static/effects/2d-sprite-old-photo.gif)
 
+### 外发光（完善中...）
+
+### 外描边（完善中...）
+
+## TODO
+
+* [ ] 图像裁剪
+* [ ] 图像模糊
+* [ ] 闪光
+* [ ] 波浪
+* [ ] 雨滴
+* [ ] ...
+
 ## 支持一下作者吧
 
 如果此项目对你学习和理解Shader有帮助，不妨支持一下我吧~
 
+ps：支持扫码催更哦🤣🤣🤣👇👇👇👇
+
 ![](./static/pay.png)
+
 
 ## LICENSE
 
