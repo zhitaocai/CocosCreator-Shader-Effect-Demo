@@ -4,22 +4,23 @@
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
-    "__uuid__": "559dcd1e-233b-4e1f-b1da-733c9232f06f"
+    "__uuid__": "89f30b2e-b75e-49b1-9dfc-cb341cadd30a"
   },
   "_defines": {
     "USE_TEXTURE": true,
     "USE_ALPHA_TEST": false,
-    "SHOW_OUT_LINE": true
+    "SHOW_OUTTER_GLOW": true
   },
   "_props": {
     "texture": null,
-    "outlineColor": {
+    "glowColor": {
       "__type__": "cc.Color",
       "r": 255,
       "g": 0,
       "b": 0,
       "a": 255
     },
-    "outlineWidth": 0.002
+    "glowColorSize": 0.15,
+    "glowThreshold": 1
   }
 }

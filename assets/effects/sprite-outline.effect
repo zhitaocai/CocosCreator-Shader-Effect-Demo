@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-
+// 描边特效
 CCEffect %{
   techniques:
   - passes:
@@ -13,8 +13,24 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        outlineColor: { value: [1., .0, .0, 1.], editor: { type: color } }
-        outlineSize: { value: .01 }
+
+        # 描边颜色
+        outlineColor: { 
+          value: [1.0, 0.0, 0.0, 1.0], 
+          inspector: {
+            type: color,
+            tooltip: "描边颜色",
+          }
+        }
+
+        # 描边宽度
+        outlineWidth: { 
+          value: 0.002,
+          inspector: {
+            tooltip: "描边宽度",
+            range: [0.0, 1.0]
+          }
+        }
 }%
 
 
@@ -71,23 +87,23 @@ CCProgram fs %{
     // 描边颜色 
     vec4 outlineColor;
     // 描边偏移大小
-    float outlineSize;
+    float outlineWidth;
     // 特别地，必须是 vec4 先于 float 声明
   };
 
-  // 将图像往8个方向偏移后，得到一个类放大效果，然后取放大后的图像的透明度，即可得到一个放大后的区域，可以很方便填充（描边）颜色
-  // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineSize 的8个点，求他们的透明度之和
+  // 将图像往8个方向偏移后，得到一个类似放大的效果，然后取放大后的图像的透明度，即可得到一个放大后的区域，可以很方便填充（描边）颜色
+  // 取当前点上、下、左、右、上左、上右、下左、下右共计8个方向，距离为 outlineWidth 的8个点，求他们的透明度之和
   // 由此可以得到当前点是否属于图像往八个方向做偏移后得到的放大图区域，并且能得到该点最终透明度值
   // 最终对应的为图像偏移/放大后的背景区域
   float getBgAlpha() {
-    vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineSize)); 
-    vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineSize)); 
-    vec4 color_left = texture(texture, v_uv0 - vec2(outlineSize, 0)); 
-    vec4 color_right = texture(texture, v_uv0 + vec2(outlineSize, 0)); 
-    vec4 color_up_left = texture(texture, v_uv0 + vec2(outlineSize, -outlineSize)); 
-    vec4 color_up_right = texture(texture, v_uv0 + vec2(outlineSize, outlineSize)); 
-    vec4 color_down_left = texture(texture, v_uv0 + vec2(-outlineSize, -outlineSize)); 
-    vec4 color_down_right = texture(texture, v_uv0 + vec2(-outlineSize, outlineSize)); 
+    vec4 color_up = texture(texture, v_uv0 + vec2(0, outlineWidth)); 
+    vec4 color_down = texture(texture, v_uv0 - vec2(0, outlineWidth)); 
+    vec4 color_left = texture(texture, v_uv0 - vec2(outlineWidth, 0)); 
+    vec4 color_right = texture(texture, v_uv0 + vec2(outlineWidth, 0)); 
+    vec4 color_up_left = texture(texture, v_uv0 + vec2(outlineWidth, -outlineWidth)); 
+    vec4 color_up_right = texture(texture, v_uv0 + vec2(outlineWidth, outlineWidth)); 
+    vec4 color_down_left = texture(texture, v_uv0 + vec2(-outlineWidth, -outlineWidth)); 
+    vec4 color_down_right = texture(texture, v_uv0 + vec2(-outlineWidth, outlineWidth)); 
     float total = color_right.a + color_left.a + color_down.a + color_up.a + color_up_left.a + color_up_right.a + color_down_left.a + color_down_right.a; 
     return clamp(total, 0.0, 1.0);
   }
@@ -111,6 +127,11 @@ CCProgram fs %{
     gl_FragColor = o;
 
     #if SHOW_OUT_LINE
+      // 无描边宽度即结束
+      if (outlineWidth == 0.0) {
+        return;
+      }
+
       // 先画背景色
       vec4 color_dest = outlineColor * getBgAlpha();
 
