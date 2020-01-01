@@ -6,9 +6,10 @@ export default class MosaicEffectScene extends cc.Component {
     private _xMosaicCountSliderLabel: cc.Label = null;
     private _yMosaicCountSlider: cc.Slider = null;
     private _yMosaicCountSliderLabel: cc.Label = null;
+    private _mosaicCountSlider: cc.Slider = null;
+    private _mosaicCountSliderLabel: cc.Label = null;
 
     private _examplesParentNode: cc.Node = null;
-
 
     onLoad() {
         // 关闭动态合图
@@ -18,6 +19,8 @@ export default class MosaicEffectScene extends cc.Component {
         this._xMosaicCountSliderLabel = cc.find("Canvas/Content/Sliders/XMosaicCountSlider/ValueLabel").getComponent(cc.Label);
         this._yMosaicCountSlider = cc.find("Canvas/Content/Sliders/YMosaicCountSlider/Slider").getComponent(cc.Slider);
         this._yMosaicCountSliderLabel = cc.find("Canvas/Content/Sliders/YMosaicCountSlider/ValueLabel").getComponent(cc.Label);
+        this._mosaicCountSlider = cc.find("Canvas/Content/Sliders/MosaicCountSlider/Slider").getComponent(cc.Slider);
+        this._mosaicCountSliderLabel = cc.find("Canvas/Content/Sliders/MosaicCountSlider/ValueLabel").getComponent(cc.Label);
 
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
     }
@@ -25,15 +28,28 @@ export default class MosaicEffectScene extends cc.Component {
     onEnable() {
         this._xMosaicCountSlider.node.on("slide", this._onSliderChanged, this);
         this._yMosaicCountSlider.node.on("slide", this._onSliderChanged, this);
+        this._mosaicCountSlider.node.on("slide", this._onSliderChangedTogether, this);
     }
 
     onDisable() {
         this._xMosaicCountSlider.node.off("slide", this._onSliderChanged, this);
         this._yMosaicCountSlider.node.off("slide", this._onSliderChanged, this);
+        this._mosaicCountSlider.node.off("slide", this._onSliderChangedTogether, this);
     }
 
     start() {
         this._onSliderChanged();
+    }
+
+    private _onSliderChangedTogether() {
+        let mosaicCount = Math.round(this._mosaicCountSlider.progress * 300);
+        this._mosaicCountSliderLabel.string = `${mosaicCount}`;
+
+        // 更新材质
+        this._updateRenderComponentMaterial({
+            xBlockCount: mosaicCount,
+            yBlockCount: mosaicCount
+        });
     }
 
     private _onSliderChanged() {
