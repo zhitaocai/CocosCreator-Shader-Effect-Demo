@@ -4,14 +4,23 @@
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
+## 一、项目说明
 
-## 特效预览
+1. 此项目为我在学习过程中的一些分享和实现，因此项目名字以 **`Demo`** 为后缀。
+2. 项目重点在于 **「渔」**，不在于 **「鱼」** 。
+3. 如果你有意将此Demo中的效果加入到你的项目中，**请认真评估是否适合你的项目使用！**
+
+那么现在，我们先来轻松地看下有哪些特效效果吧~
+
+## 二、特效预览
 
 ### 1. 内发光（[实现原理及使用说明]()）
 
 ![](static/effects/2d-sprite-glow-inner.gif)
 
 ## 支持一下作者吧
+
+如果此项目对你学习和理解Shader有帮助，不妨支持一下我吧~
 
 ![](./static/pay.png)
 
