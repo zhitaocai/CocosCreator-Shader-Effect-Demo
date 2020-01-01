@@ -105,6 +105,28 @@ CCProgram fs %{
   };
 
   /**
+   * 获取纹理uv颜色 
+   *
+   * 主要实现：超出边界的统一返回 vec4(0.0, 0.0, 0.0, 0.0)
+   * 
+   * 在 Cocos Creator 2.2.1 的编辑器中，超出边界的uv并不是返回 vec4(0.0, 0.0, 0.0, 0.0)，实际返回为
+   * 
+   * * 超出左边界的uv，返回 v_uv0.x = 0 的颜色
+   * * 超出右边界的uv，返回 v_uv0.x = 1 的颜色
+   * * 超出上边界的uv，返回 v_uv0.y = 1 的颜色
+   * * 超出下边界的uv，返回 v_uv0.y = 0 的颜色
+   *
+   * 和实际在浏览器上显示（超出边界即为透明）的有区别，为了统一，这里适配一下，这样子，在编辑器上预览的效果就能和实际浏览器的保持一致
+   */
+  vec4 getTextureColor(sampler2D texture, vec2 v_uv0) {
+    if (v_uv0.x > 1.0 || v_uv0.x < 0.0 || v_uv0.y > 1.0 || v_uv0.y < 0.0) {
+      return vec4(0.0, 0.0, 0.0, 0.0);
+    }
+    return texture(texture, v_uv0);
+  }
+
+
+  /**
    * 获取指定角度方向，距离为xxx的像素的透明度
    *
    * @param angle 角度 [0.0, 360.0]
@@ -115,7 +137,7 @@ CCProgram fs %{
   float getColorAlpha(float angle, float dist) {
     // 角度转弧度，公式为：弧度 = 角度 * (pi / 180)
     float radian = angle * 0.01745329252; // 这个浮点数是 pi / 180
-    vec4 color = texture(texture, v_uv0 + vec2(dist * cos(radian), dist * sin(radian))); 
+    vec4 color = getTextureColor(texture, v_uv0 + vec2(dist * cos(radian), dist * sin(radian))); 
     return color.a;
   }
 
@@ -159,7 +181,7 @@ CCProgram fs %{
     // 那么就意味着这个点是图像外的透明点或者图像内透明点（如空洞）之类的
     // 内发光的话，这些透明点我们不用处理，让它保持原样，否则就是会有内描边或者一点扩边的效果
     // 同时也是提前直接结束，减少计算量
-    vec4 srcColor = texture(texture, v_uv0);
+    vec4 srcColor = getTextureColor(texture, v_uv0);
     if (srcColor.a <= glowThreshold) {
       return srcColor.a;
     } 
@@ -186,7 +208,7 @@ CCProgram fs %{
     vec4 o = vec4(1, 1, 1, 1);
 
     #if USE_TEXTURE
-    o *= texture(texture, v_uv0);
+    o *= getTextureColor(texture, v_uv0);
       #if CC_USE_ALPHA_ATLAS_TEXTURE
       o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
       #endif
