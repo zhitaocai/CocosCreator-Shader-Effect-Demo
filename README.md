@@ -22,6 +22,10 @@
 
 ![](static/effects/2d-sprite-mosaic.gif)
 
+### 老照片（[实现原理及使用说明]() 编写中... ，催更麻烦移步一下到文末 **激活作者** 😜）
+
+![](static/effects/2d-sprite-old-photo.gif)
+
 ## 支持一下作者吧
 
 如果此项目对你学习和理解Shader有帮助，不妨支持一下我吧~
