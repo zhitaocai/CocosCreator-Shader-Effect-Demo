@@ -31,7 +31,7 @@ export default class GrayEffectScene extends cc.Component {
 
         // 更新材质
         this._updateRenderComponentMaterial({
-            oldLevel: this._grayLevelSlider.progress
+            grayLevel: this._grayLevelSlider.progress
         });
     }
 
@@ -46,12 +46,12 @@ export default class GrayEffectScene extends cc.Component {
         /**
          * 灰化程度 [0.0, 1.0] ，1.0 表示完全灰化
          */
-        oldLevel: number;
+        grayLevel: number;
     }) {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("oldLevel", param.oldLevel);
+                material.setProperty("grayLevel", param.grayLevel);
                 renderComponent.setMaterial(0, material);
             });
         });

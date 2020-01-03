@@ -8,7 +8,7 @@
   },
   "_defines": {
     "USE_TEXTURE": true,
-    "USE_OLD_PHOTO": true
+    "USE_GRAY": true
   },
   "_props": {}
 }
