@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.1.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.2.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
