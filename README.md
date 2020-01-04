@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.1.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.2.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -35,6 +35,10 @@
 ### 老照片（[实现原理](https://www.jianshu.com/p/711a54ff2fa0)）
 
 ![](static/effects/2d-sprite-old-photo.gif)
+
+### 灰度渐变（实现原理同老照片一样，可参考[老照片实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）
+
+![](static/effects/2d-sprite-gray.gif)
 
 ### 外发光（完善中...）
 
