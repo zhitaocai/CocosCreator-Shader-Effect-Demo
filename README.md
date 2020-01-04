@@ -36,6 +36,10 @@
 
 ![](static/effects/2d-sprite-old-photo.gif)
 
+### 灰度渐变（实现原理同老照片一样，可参考[老照片实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）
+
+![](static/effects/2d-sprite-gray.gif)
+
 ### 外发光（完善中...）
 
 ### 外描边（完善中...）
