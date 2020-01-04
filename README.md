@@ -16,6 +16,7 @@
 * [Cocos Creator Shader Effect 系列 - 1 - 材质，Effect，Inspector，纹理之间的关系](https://www.jianshu.com/p/ca28666d25d2)
 * [Cocos Creator Shader Effect 系列 - 2 - Effect 文件解读](https://www.jianshu.com/p/bae75612ef48)
 * [Cocos Creator Shader Effect 系列 - 3 - Effect 文件调试](https://www.jianshu.com/p/2fd028aa0bb8)
+* [Cocos Creator Shader Effect 系列 - 4 - 老照片特效](https://www.jianshu.com/p/711a54ff2fa0)
 * 编写中...
 
 
@@ -31,7 +32,7 @@
 
 ![](static/effects/2d-sprite-mosaic.gif)
 
-### 老照片（[实现原理及使用说明]() 编写中... ，催更麻烦移步一下到文末 **激活作者** 😜）
+### 老照片（[实现原理](https://www.jianshu.com/p/711a54ff2fa0)）
 
 ![](static/effects/2d-sprite-old-photo.gif)
 
