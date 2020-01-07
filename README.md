@@ -18,6 +18,8 @@
 * [Cocos Creator Shader Effect 系列 - 3 - Effect 文件调试](https://www.jianshu.com/p/2fd028aa0bb8)
 * [Cocos Creator Shader Effect 系列 - 4 - 老照片特效](https://www.jianshu.com/p/711a54ff2fa0)
 * [Cocos Creator Shader Effect 系列 - 5 - 马赛克/像素化特效](https://www.jianshu.com/p/40e72ab76afd)
+* [Cocos Creator Shader Effect 系列 - 6 - 内发光特效](https://www.jianshu.com/p/326b73f86ecc)
+
 * 编写中...
 
 
@@ -25,7 +27,7 @@
 
 那么现在，我们先来轻松地看下有哪些特效效果吧~
 
-### 内发光（[实现原理及使用说明]() 编写中... ，催更麻烦移步一下到文末 **激活作者** 😜）
+### 内发光（[实现原理](https://www.jianshu.com/p/326b73f86ecc)）
 
 ![](static/effects/2d-sprite-glow-inner.gif)
 
