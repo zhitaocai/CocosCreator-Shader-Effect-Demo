@@ -11,7 +11,7 @@
     "USE_MOSAIC": true
   },
   "_props": {
-    "xBlockCount": 50,
-    "yBlockCount": 50
+    "xBlockCount": 40,
+    "yBlockCount": 40
   }
 }
