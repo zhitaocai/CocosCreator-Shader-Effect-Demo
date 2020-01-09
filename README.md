@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.2.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.3.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -42,6 +42,15 @@
 ### 灰度渐变（实现原理同老照片一样，可参考[老照片实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）
 
 ![](static/effects/2d-sprite-gray.gif)
+
+### 圆角裁剪
+
+> * 声明：此特效为搬运过来的特效，非原创。
+> * 修改的地方：搬运后，在原来的主要代码上加入了自己的理解注释
+> * 实现原理：参考文章 [《圆角计算 Shader》](https://www.cnblogs.com/jqm304775992/p/4987793.html)
+> * 参考代码：Cocos 论坛帖子[《分享更高效的 creator 裁圆角头像 shader》](https://forum.cocos.org/t/creator-shader-2019-10-22-2-2-0/82548) 和对应的 [实现代码](https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect)
+
+![](static/effects/2d-sprite-round-corner-crop.gif)
 
 ### 外发光（完善中...）
 
