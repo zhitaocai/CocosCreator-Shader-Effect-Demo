@@ -8,7 +8,9 @@
   },
   "_defines": {
     "USE_TEXTURE": true,
-    "USE_OLD_PHOTO": true
+    "ENABLE_ROUNDCORNER": true
   },
-  "_props": {}
+  "_props": {
+    "roundCornerRadius": 0.1
+  }
 }
