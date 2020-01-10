@@ -4,14 +4,13 @@
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
-    "__uuid__": "9638979d-62b3-4e5b-adea-7ad706e66e65"
+    "__uuid__": "a4afedba-5234-44d7-9031-cba83051d521"
   },
   "_defines": {
     "USE_TEXTURE": true,
-    "USE_MOSAIC": true
+    "ENABLE_ROUNDCORNER": true
   },
   "_props": {
-    "xBlockCount": 40,
-    "yBlockCount": 40
+    "roundCornerRadius": 0.1
   }
 }

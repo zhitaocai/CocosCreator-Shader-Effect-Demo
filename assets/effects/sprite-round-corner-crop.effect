@@ -1,0 +1,144 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+// 圆角裁剪
+// 原理：https://www.cnblogs.com/jqm304775992/p/4987793.html
+// 代码：复制 yanjifa/shaderDemor 的 https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+        # 圆角半径
+        roundCornerRadius: {
+          value: 0.1,
+          inspector: {
+            tooltip: "圆角半径",
+            range: [0.0, 0.5]
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if ENABLE_ROUNDCORNER
+  uniform RoundCorner {
+    // 圆角半径
+    float roundCornerRadius;
+  }
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    #if ENABLE_ROUNDCORNER
+    // 约束圆角半径范围在 [0.0, 0.5]
+    float radius = clamp(0.0, 0.5, roundCornerRadius);
+
+    // 将纹理uv往左下偏移，实现偏移后的纹理中心点在 OpenGL 坐标系的原点
+    vec2 uv = v_uv0.xy - vec2(0.5, 0.5);
+
+    // uv.x , uv.y :              为偏移后的的uv
+    // abs(uv.x) , abs(uv.y) :    将第二、三、四象限的点都投影到第一象限上，这样子只需要处理第一象限的情况就可以，简化判断
+    // 0.5 - radius :             计算出第一象限的圆角所在圆的圆心坐标
+    // (rx, ry) :                 偏移映射后的 新的uv 坐标，相对于 第一象限圆角坐在圆心坐标 的相对坐标
+    float rx = abs(uv.x) - (0.5 - radius);
+    float ry = abs(uv.y) - (0.5 - radius);
+
+    // 区分 以第一象限圆角所在圆心坐标为原点的坐标的四个象限
+    //
+    // 第一象限 mx = 1, my = 1
+    // 第二象限 mx = 0, my = 1
+    // 第三象限 mx = 0, my = 0
+    // 第四象限 mx = 1, my = 0
+    // 
+    // 当 mx * my 时，只要等于1，那就是标识第一象限（实际对应圆角区域所在矩形），否则就是第二、三、四象限
+    float mx = step(0.5 - radius, abs(uv.x));
+    float my = step(0.5 - radius, abs(uv.y));
+
+    // 计算相对uv坐标到圆心的距离
+    float len = length(vec2(rx, ry));
+
+    // mx * my = 0 时，代表非圆角区域，a 值为1，代表完全采用原始纹理的透明度
+    // mx * my = 1 时，代表园所所在矩形区域
+    //  step(radius, len) 可以区分出圆角所在矩形区域的 圆角区域 和 非圆角区域
+    //    其中圆角区域值为0，非圆角区域值为1
+    //      当为圆角区域时，a 值为1，代表完全采用原始纹理透明度
+    //      当为非圆角区域时，a 值为0，代表完全透明
+    //    至此已经实现圆角裁剪
+    //  
+    //  smoothstep(0., radius * 0.01, len - radius) 是用于抗锯齿优化
+    //    原理：针对点在非圆角区域的情况，针对点在大于「圆半径一点点」地方的区域，进行平滑过渡，以实现抗锯齿
+    //    其中，
+    //      「圆半径一点点」用  radius * 0.01 表示（0.01 可自行改变）
+    //      点在大于圆半径的区域用 len - radius ，此值会在 [0.0, radius * 0.01] 之间时会平滑过渡
+    float a = 1.0 - mx * my * step(radius, len) * smoothstep(0., radius * 0.01, len - radius);
+    o = vec4(o.rgb, o.a * a);
+    #endif
+    gl_FragColor = o;
+  }
+}%
