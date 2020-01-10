@@ -18,12 +18,29 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        # 老化程度
-        oldLevel: {
-          value: 1.0,
+
+        #  扩散颜色
+        centerColor: {
+          value: [1.0, 1.0, 0.0, 1.0], 
+          inspector: { 
+            type: color,
+            tooltip: "发光颜色"
+          } 
+        }
+
+        # 扩散起点坐标
+        centerPoint: {
+          value: [0.5, 0.5],
           inspector: {
-            tooltip: "老化程度",
-            range: [0.0, 1.0]
+            tooltip: "扩散起点坐标" 
+          }
+        }
+
+        # 扩散半径
+        radius: {
+          value: 0.2,
+          inspector: {
+            tooltip: "扩散半径"
           }
         }
 }%
@@ -76,24 +93,45 @@ CCProgram fs %{
   uniform sampler2D texture;
   #endif
 
-  #if USE_OLD_PHOTO
-  uniform OldPhoto {
-    // 老化程度
-    float oldLevel;
+  #if ENABLE_DIFFUSION
+  uniform Diffusion {
+    // 扩散颜色
+    vec4 centerColor;
+
+    // 扩散起点坐标
+    vec2 centerPoint;
+
+    // 扩展半径
+    float radius;
   }
 
   /**
-   * 获取老化颜色
-   * 
-   * @param color 原始颜色 
-   *
-   * @return 老化后的颜色
+   * 添加某个扩散点后混合后的纹理颜色
    */
-  vec4 getOldPhotoColor(vec4 color) {
-    float r = 0.393 * color.r + 0.769 * color.g + 0.189 * color.b; 
-    float g = 0.349 * color.r + 0.686 * color.g + 0.168 * color.b; 
-    float b = 0.272 * color.r + 0.534 * color.g + 0.131 * color.b;
-    return vec4(r, g, b, color.a);
+  vec4 addDiffusionColor(vec4 textureColor, vec2 centerPoint, float radius, vec4 centerColor) {
+    // 计算当前 uv 到扩散起点的距离
+    float dis = distance(v_uv0, centerPoint);
+
+    // 第一步裁剪
+    // 找出扩散范围，扩散范围为1.0透明度，其他范围为0.0透明度
+    float a = step(dis, radius);
+
+    // // 第二步裁剪
+    // // 本来透明的uv不要
+    // a *= step(0.01, textureColor.a);
+
+    // 加入从中心往外渐变的效果
+    a *= 1.0 - (dis / radius);
+
+    // 加点料，让中心点更加亮
+    // a = -1.0 * (a - 1.0) * (a - 1.0) + 1.0;
+    // a = -1.0 * (a - 1.0) * (a - 1.0) * (a - 1.0) * (a - 1.0) + 1.0;
+
+    // 计算出扩散范围内，不同 uv 对应的实际扩散颜色值
+    vec4 diffusionColor = centerColor * a;
+
+    // 混合颜色：在原始图像颜色上叠加扩散颜色
+    return textureColor * textureColor.a + diffusionColor;
   }
   #endif
 
@@ -111,12 +149,14 @@ CCProgram fs %{
 
     ALPHA_TEST(o);
 
-    #if USE_OLD_PHOTO
-    vec4 srcColor = o;
-    vec4 oldColor = getOldPhotoColor(srcColor);
-
-    o = srcColor + (oldColor - srcColor) * oldLevel;
-    #endif
     gl_FragColor = o;
+    
+    #if ENABLE_DIFFUSION
+    gl_FragColor = addDiffusionColor(gl_FragColor, centerPoint, radius, centerColor);
+    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.7, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
+    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.8, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
+    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.9, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
+    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.2, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
+    #endif
   }
 }%

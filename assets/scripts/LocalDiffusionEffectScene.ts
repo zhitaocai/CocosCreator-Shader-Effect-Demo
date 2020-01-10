@@ -8,6 +8,8 @@ export default class LocalDiffusionEffectScene extends cc.Component {
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
+        cc.dynamicAtlasManager.enabled = false;
+        
         this._oldLevelSlider = cc.find("Canvas/Content/Sliders/OldLevelSlider/Slider").getComponent(cc.Slider);
         this._oldLevelSliderLabel = cc.find("Canvas/Content/Sliders/OldLevelSlider/ValueLabel").getComponent(cc.Label);
 
@@ -29,10 +31,10 @@ export default class LocalDiffusionEffectScene extends cc.Component {
     private _onSliderChanged() {
         this._oldLevelSliderLabel.string = `${this._oldLevelSlider.progress.toFixed(2)}`;
 
-        // 更新材质
-        this._updateRenderComponentMaterial({
-            oldLevel: this._oldLevelSlider.progress
-        });
+        // // 更新材质
+        // this._updateRenderComponentMaterial({
+        //     oldLevel: this._oldLevelSlider.progress
+        // });
     }
 
     /**
@@ -44,14 +46,35 @@ export default class LocalDiffusionEffectScene extends cc.Component {
      */
     private _updateRenderComponentMaterial(param: {
         /**
-         * 老化程度 [0.0, 1.0] ，1.0 表示完全老化
+         * 中心点颜色
          */
-        oldLevel: number;
+        centerColor: cc.Color;
+
+        /**
+         * 中心点坐标 ([0.0, 1.0], [0.0, 1.0])
+         */
+        certerPoint: cc.Vec2;
+
+        /**
+         * 扩散半径 [0.0, 1.0]
+         */
+        radius: number;
     }) {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("oldLevel", param.oldLevel);
+                // material.setProperty("centerColor", cc.v4(1.0, 1.0, 0.0, 1.0));
+                material.setProperty(
+                    "centerColor",
+                    cc.v4(
+                        param.centerColor.getR() / 255,
+                        param.centerColor.getG() / 255,
+                        param.centerColor.getB() / 255,
+                        param.centerColor.getA() / 255
+                    )
+                );
+                material.setProperty("centerPoint", param.certerPoint);
+                material.setProperty("radius", param.radius);
                 renderComponent.setMaterial(0, material);
             });
         });
