@@ -3,7 +3,7 @@
 // 原理：
 // 1. 画圆
 // 2. 圆心高亮（透明度=1.0），圆边缘不亮（透明度=0.0）
-// 3. 在原图像上方叠加圆
+// 4. 在原图像上方叠加圆
 
 CCEffect %{
   techniques:
@@ -21,7 +21,7 @@ CCEffect %{
 
         #  扩散颜色
         centerColor: {
-          value: [1.0, 0.0, 0.0, 1.0], 
+          value: [1.0, 1.0, 0.0, 1.0], 
           inspector: { 
             type: color,
             tooltip: "发光颜色"
@@ -30,7 +30,7 @@ CCEffect %{
 
         # 扩散起点坐标
         centerPoint: {
-          value: [0.5, 0.5],
+          value: [0.2, 0.2],
           inspector: {
             tooltip: "扩散起点坐标" 
           }
@@ -38,7 +38,7 @@ CCEffect %{
 
         # 扩散半径
         radius: {
-          value: 0.2,
+          value: 0.4,
           inspector: {
             tooltip: "扩散半径"
           }
@@ -98,15 +98,15 @@ CCProgram fs %{
     // 扩散颜色
     vec4 centerColor;
 
-    // // 因为现在cc不支持 vec2 数组，所以只能用 vec4 数组
-    // // 而一个 vec4 就包含两个 vec2 ，共计 4 个属性，所以如果数组是4，就表示有8个点了
-    // vec4 points[4];
-
     // 扩散起点坐标
     vec2 centerPoint;
 
     // 扩展半径
     float radius;
+
+    // 裁剪掉透明区域上的点光
+    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义 cropAlpha
+    bool cropAlpha;
   }
 
   /**
@@ -116,13 +116,15 @@ CCProgram fs %{
     // 计算当前 uv 到扩散起点的距离
     float dis = distance(v_uv0, centerPoint);
 
-    // 第一步裁剪
-    // 找出扩散范围，扩散范围为1.0透明度，其他范围为0.0透明度
-    float a = step(dis, radius);
+    float a = 1.0 ;
 
-    // // 第二步裁剪
-    // // 本来透明的uv不要
-    // a *= step(0.01, textureColor.a);
+    // 裁剪掉透明区域上的点光 
+    if (cropAlpha) {
+      a *= step(0.01, textureColor.a);
+    }
+
+    // 裁剪掉扩散范围外的uv
+    // a *= step(dis, radius);
 
     // 加入从中心往外渐变的效果
     a *= 1.0 - (dis / radius);

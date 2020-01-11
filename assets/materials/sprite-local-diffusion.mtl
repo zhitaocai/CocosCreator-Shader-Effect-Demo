@@ -11,6 +11,6 @@
     "ENABLE_DIFFUSION": true
   },
   "_props": {
-    "radius": 0.2
+    "radius": 0.4
   }
 }

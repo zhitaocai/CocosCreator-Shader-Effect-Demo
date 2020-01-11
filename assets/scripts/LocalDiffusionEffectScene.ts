@@ -1,4 +1,4 @@
-import LocalDiffusionCtrl from "./LocalDiffusionCtrl";
+import LocalDiffusionCtrl, { LocalDiffusionUniform } from "./LocalDiffusionCtrl";
 
 const { ccclass, property } = cc._decorator;
 
@@ -19,25 +19,29 @@ export default class LocalDiffusionEffectScene extends cc.Component {
     private _radiuSlider: cc.Slider = null;
     private _radiuSliderLabel: cc.Label = null;
 
+    private _cropAlphaToggle: cc.Toggle = null;
+
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
         cc.dynamicAtlasManager.enabled = false;
 
-        this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
-        this._redSliderLabel = cc.find("Canvas/Content/Sliders/ColorRedSlider/ValueLabel").getComponent(cc.Label);
+        this._redSlider = cc.find("Canvas/Content/Controller/ColorRedSlider/Slider").getComponent(cc.Slider);
+        this._redSliderLabel = cc.find("Canvas/Content/Controller/ColorRedSlider/ValueLabel").getComponent(cc.Label);
 
-        this._greenSlider = cc.find("Canvas/Content/Sliders/ColorGreenSlider/Slider").getComponent(cc.Slider);
-        this._greenSliderLabel = cc.find("Canvas/Content/Sliders/ColorGreenSlider/ValueLabel").getComponent(cc.Label);
+        this._greenSlider = cc.find("Canvas/Content/Controller/ColorGreenSlider/Slider").getComponent(cc.Slider);
+        this._greenSliderLabel = cc.find("Canvas/Content/Controller/ColorGreenSlider/ValueLabel").getComponent(cc.Label);
 
-        this._blueSlider = cc.find("Canvas/Content/Sliders/ColorBlueSlider/Slider").getComponent(cc.Slider);
-        this._blueSliderLabel = cc.find("Canvas/Content/Sliders/ColorBlueSlider/ValueLabel").getComponent(cc.Label);
+        this._blueSlider = cc.find("Canvas/Content/Controller/ColorBlueSlider/Slider").getComponent(cc.Slider);
+        this._blueSliderLabel = cc.find("Canvas/Content/Controller/ColorBlueSlider/ValueLabel").getComponent(cc.Label);
 
-        this._alphaSlider = cc.find("Canvas/Content/Sliders/ColorAlphaSlider/Slider").getComponent(cc.Slider);
-        this._alphaSliderLabel = cc.find("Canvas/Content/Sliders/ColorAlphaSlider/ValueLabel").getComponent(cc.Label);
+        this._alphaSlider = cc.find("Canvas/Content/Controller/ColorAlphaSlider/Slider").getComponent(cc.Slider);
+        this._alphaSliderLabel = cc.find("Canvas/Content/Controller/ColorAlphaSlider/ValueLabel").getComponent(cc.Label);
 
-        this._radiuSlider = cc.find("Canvas/Content/Sliders/RadiuSlider/Slider").getComponent(cc.Slider);
-        this._radiuSliderLabel = cc.find("Canvas/Content/Sliders/RadiuSlider/ValueLabel").getComponent(cc.Label);
+        this._radiuSlider = cc.find("Canvas/Content/Controller/RadiuSlider/Slider").getComponent(cc.Slider);
+        this._radiuSliderLabel = cc.find("Canvas/Content/Controller/RadiuSlider/ValueLabel").getComponent(cc.Label);
+
+        this._cropAlphaToggle = cc.find("Canvas/Content/Controller/CropAlphaToggle/Toggle").getComponent(cc.Toggle);
 
         // 代码添加控制脚本
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
@@ -47,26 +51,28 @@ export default class LocalDiffusionEffectScene extends cc.Component {
     }
 
     onEnable() {
-        this._redSlider.node.on("slide", this._onSliderChanged, this);
-        this._greenSlider.node.on("slide", this._onSliderChanged, this);
-        this._blueSlider.node.on("slide", this._onSliderChanged, this);
-        this._alphaSlider.node.on("slide", this._onSliderChanged, this);
-        this._radiuSlider.node.on("slide", this._onSliderChanged, this);
+        this._redSlider.node.on("slide", this._onPropertyChanged, this);
+        this._greenSlider.node.on("slide", this._onPropertyChanged, this);
+        this._blueSlider.node.on("slide", this._onPropertyChanged, this);
+        this._alphaSlider.node.on("slide", this._onPropertyChanged, this);
+        this._radiuSlider.node.on("slide", this._onPropertyChanged, this);
+        this._cropAlphaToggle.node.on("toggle", this._onPropertyChanged, this);
     }
 
     onDisable() {
-        this._redSlider.node.off("slide", this._onSliderChanged, this);
-        this._greenSlider.node.off("slide", this._onSliderChanged, this);
-        this._blueSlider.node.off("slide", this._onSliderChanged, this);
-        this._alphaSlider.node.off("slide", this._onSliderChanged, this);
-        this._radiuSlider.node.off("slide", this._onSliderChanged, this);
+        this._redSlider.node.off("slide", this._onPropertyChanged, this);
+        this._greenSlider.node.off("slide", this._onPropertyChanged, this);
+        this._blueSlider.node.off("slide", this._onPropertyChanged, this);
+        this._alphaSlider.node.off("slide", this._onPropertyChanged, this);
+        this._radiuSlider.node.off("slide", this._onPropertyChanged, this);
+        this._cropAlphaToggle.node.off("toggle", this._onPropertyChanged, this);
     }
 
     start() {
-        this._onSliderChanged();
+        this._onPropertyChanged();
     }
 
-    private _onSliderChanged() {
+    private _onPropertyChanged() {
         // 更新进度条值 Label 文本
         this._redSliderLabel.string = `${this._redSlider.progress.toFixed(2)} | ${Math.round(255 * this._redSlider.progress)}`;
         this._greenSliderLabel.string = `${this._greenSlider.progress.toFixed(2)} | ${Math.round(255 * this._greenSlider.progress)}`;
@@ -76,16 +82,16 @@ export default class LocalDiffusionEffectScene extends cc.Component {
 
         // 通知子节点更新材质
         this._examplesParentNode.children.forEach(childNode => {
-            childNode.emit(
-                "on_property_change",
-                cc.color(
+            childNode.emit("on_property_change", <LocalDiffusionUniform>{
+                centerColor: cc.color(
                     Math.round(255 * this._redSlider.progress),
                     Math.round(255 * this._greenSlider.progress),
                     Math.round(255 * this._blueSlider.progress),
                     Math.round(255 * this._alphaSlider.progress)
                 ),
-                this._radiuSlider.progress
-            );
+                radius: this._radiuSlider.progress,
+                cropAlpha: this._cropAlphaToggle.isChecked
+            });
         });
     }
 }
