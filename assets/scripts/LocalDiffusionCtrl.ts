@@ -2,20 +2,20 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class LocalDiffusionCtrl extends cc.Component {
-    private color: cc.Color = cc.Color.RED;
+    private _centerPointPos: cc.Vec2 = cc.v2(0.5, 0.5);
+    private _centerColor: cc.Color = cc.Color.RED;
+    private _radius: number = 0.2;
 
     onEnable() {
         this.node.on(cc.Node.EventType.TOUCH_START, this._onTouchStart, this);
         this.node.on(cc.Node.EventType.TOUCH_MOVE, this._onTouchMove, this);
-        this.node.on(cc.Node.EventType.TOUCH_END, this._onTouchEnd, this);
-        this.node.on(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancel, this);
+        this.node.on("on_property_change", this._onPropertyChange, this);
     }
 
     onDisable() {
         this.node.off(cc.Node.EventType.TOUCH_START, this._onTouchStart, this);
         this.node.off(cc.Node.EventType.TOUCH_MOVE, this._onTouchMove, this);
-        this.node.off(cc.Node.EventType.TOUCH_END, this._onTouchEnd, this);
-        this.node.off(cc.Node.EventType.TOUCH_CANCEL, this._onTouchCancel, this);
+        this.node.off("on_property_change", this._onPropertyChange, this);
     }
 
     private _onTouchStart(event: cc.Event.EventTouch) {
@@ -27,23 +27,28 @@ export default class LocalDiffusionCtrl extends cc.Component {
         let touchPointInNodeSpace = this.node.convertToNodeSpaceAR(touchPointInWorldSpace);
 
         // 将触摸点转换为OPENGL坐标系并归一化
-        let normalizePos = cc.v2(
+        // OpenGl 坐标系原点在左上角
+        this._centerPointPos = cc.v2(
             this.node.anchorX + touchPointInNodeSpace.x / this.node.width,
             1 - (this.node.anchorY + touchPointInNodeSpace.y / this.node.height)
         );
 
         this._updateMaterial({
-            centerColor: this.color,
-            certerPoint: normalizePos,
-            radius: 0.6
+            centerColor: this._centerColor,
+            certerPoint: this._centerPointPos,
+            radius: this._radius
         });
     }
 
-    private _onTouchEnd(event: cc.Event.EventTouch) {
-        this._onTouchCancel(event);
+    private _onPropertyChange(color: cc.Color, radius: number) {
+        this._centerColor = color;
+        this._radius = radius;
+        this._updateMaterial({
+            centerColor: this._centerColor,
+            certerPoint: this._centerPointPos,
+            radius: this._radius
+        });
     }
-
-    private _onTouchCancel(event: cc.Event.EventTouch) {}
 
     private _updateMaterial(param: {
         /**
@@ -63,11 +68,7 @@ export default class LocalDiffusionCtrl extends cc.Component {
     }) {
         this.getComponents(cc.RenderComponent).forEach(renderComponent => {
             let material: cc.Material = renderComponent.getMaterial(0);
-            material.setProperty("centerColor", cc.v4(1.0, 1.0, 0.0, 1.0));
-            material.setProperty(
-                "centerColor",
-                cc.v4(param.centerColor.getR() / 255, param.centerColor.getG() / 255, param.centerColor.getB() / 255, param.centerColor.getA() / 255)
-            );
+            material.setProperty("centerColor", param.centerColor);
             material.setProperty("centerPoint", param.certerPoint);
             material.setProperty("radius", param.radius);
             renderComponent.setMaterial(0, material);

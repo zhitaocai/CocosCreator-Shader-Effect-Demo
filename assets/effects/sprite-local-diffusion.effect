@@ -1,9 +1,9 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 老照片特效
+// 点光/点扩散
 // 原理：
-// r = 0.393 * r + 0.769 * g + 0.189 * b; 
-// g = 0.349 * r + 0.686 * g + 0.168 * b; 
-// b = 0.272 * r + 0.534 * g + 0.131 * b;
+// 1. 画圆
+// 2. 圆心高亮（透明度=1.0），圆边缘不亮（透明度=0.0）
+// 3. 在原图像上方叠加圆
 
 CCEffect %{
   techniques:
@@ -21,7 +21,7 @@ CCEffect %{
 
         #  扩散颜色
         centerColor: {
-          value: [1.0, 1.0, 0.0, 1.0], 
+          value: [1.0, 0.0, 0.0, 1.0], 
           inspector: { 
             type: color,
             tooltip: "发光颜色"
@@ -98,6 +98,10 @@ CCProgram fs %{
     // 扩散颜色
     vec4 centerColor;
 
+    // // 因为现在cc不支持 vec2 数组，所以只能用 vec4 数组
+    // // 而一个 vec4 就包含两个 vec2 ，共计 4 个属性，所以如果数组是4，就表示有8个点了
+    // vec4 points[4];
+
     // 扩散起点坐标
     vec2 centerPoint;
 
@@ -153,10 +157,6 @@ CCProgram fs %{
     
     #if ENABLE_DIFFUSION
     gl_FragColor = addDiffusionColor(gl_FragColor, centerPoint, radius, centerColor);
-    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.7, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
-    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.8, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
-    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.9, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
-    // gl_FragColor = addDiffusionColor(gl_FragColor, vec2(0.2, 0.), 0.2, vec4(1.0, 1.0, 0.0, 1.0));
     #endif
   }
 }%
