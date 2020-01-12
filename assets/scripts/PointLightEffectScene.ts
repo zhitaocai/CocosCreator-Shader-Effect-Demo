@@ -1,9 +1,9 @@
-import LocalDiffusionCtrl, { LocalDiffusionUniform } from "./LocalDiffusionCtrl";
+import PointLightCtrlComponent, { PointLightUniform } from "./PointLightCtrlComponent";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class LocalDiffusionEffectScene extends cc.Component {
+export default class PointLightEffectScene extends cc.Component {
     private _redSlider: cc.Slider = null;
     private _redSliderLabel: cc.Label = null;
     private _greenSlider: cc.Slider = null;
@@ -40,7 +40,7 @@ export default class LocalDiffusionEffectScene extends cc.Component {
         // 代码添加控制脚本
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
         this._examplesParentNode.children.forEach(childNode => {
-            childNode.addComponent(LocalDiffusionCtrl);
+            childNode.addComponent(PointLightCtrlComponent);
         });
     }
 
@@ -78,7 +78,7 @@ export default class LocalDiffusionEffectScene extends cc.Component {
 
         // 通知子节点更新材质
         this._examplesParentNode.children.forEach(childNode => {
-            childNode.emit("on_property_change", <LocalDiffusionUniform>{
+            childNode.emit("on_property_change", <PointLightUniform>{
                 centerColor: cc.color(
                     Math.round(255 * this._redSlider.progress),
                     Math.round(255 * this._greenSlider.progress),

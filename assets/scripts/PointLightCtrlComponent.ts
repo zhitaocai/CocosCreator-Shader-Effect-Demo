@@ -1,8 +1,8 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class LocalDiffusionCtrl extends cc.Component {
-    private _localDiffusionUniform: LocalDiffusionUniform = new LocalDiffusionUniform();
+export default class PointLightCtrlComponent extends cc.Component {
+    private _localDiffusionUniform: PointLightUniform = new PointLightUniform();
 
     onEnable() {
         this.node.on(cc.Node.EventType.TOUCH_START, this._onTouchStart, this);
@@ -34,7 +34,7 @@ export default class LocalDiffusionCtrl extends cc.Component {
         this._updateMaterial();
     }
 
-    private _onPropertyChange(localDiffusionUniform: LocalDiffusionUniform) {
+    private _onPropertyChange(localDiffusionUniform: PointLightUniform) {
         this._localDiffusionUniform.centerColor = localDiffusionUniform.centerColor;
         this._localDiffusionUniform.radius = localDiffusionUniform.radius;
         this._localDiffusionUniform.cropAlpha = localDiffusionUniform.cropAlpha;
@@ -55,7 +55,7 @@ export default class LocalDiffusionCtrl extends cc.Component {
     }
 }
 
-export class LocalDiffusionUniform {
+export class PointLightUniform {
     /**
      * 中心点颜色
      */
