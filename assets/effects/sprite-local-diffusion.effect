@@ -105,8 +105,12 @@ CCProgram fs %{
     float radius;
 
     // 裁剪掉透明区域上的点光
-    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义 cropAlpha
-    bool cropAlpha;
+    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
+    bool cropAlpha;   
+
+    // 是否启用迷雾效果
+    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
+    bool enableFog;
   }
 
   /**
@@ -118,13 +122,15 @@ CCProgram fs %{
 
     float a = 1.0 ;
 
-    // 裁剪掉透明区域上的点光 
+    // 裁剪掉透明区域上的点光
     if (cropAlpha) {
       a *= step(0.01, textureColor.a);
     }
 
-    // 裁剪掉扩散范围外的uv
-    // a *= step(dis, radius);
+    // 裁剪掉扩散范围外的uv（迷雾效果）
+    if (!enableFog) {
+      a *= step(dis, radius);
+    }
 
     // 加入从中心往外渐变的效果
     a *= 1.0 - (dis / radius);

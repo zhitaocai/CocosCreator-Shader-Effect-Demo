@@ -38,6 +38,7 @@ export default class LocalDiffusionCtrl extends cc.Component {
         this._localDiffusionUniform.centerColor = localDiffusionUniform.centerColor;
         this._localDiffusionUniform.radius = localDiffusionUniform.radius;
         this._localDiffusionUniform.cropAlpha = localDiffusionUniform.cropAlpha;
+        this._localDiffusionUniform.enableFog = localDiffusionUniform.enableFog;
         this._updateMaterial();
     }
 
@@ -48,6 +49,7 @@ export default class LocalDiffusionCtrl extends cc.Component {
             material.setProperty("centerPoint", this._localDiffusionUniform.certerPoint);
             material.setProperty("radius", this._localDiffusionUniform.radius);
             material.setProperty("cropAlpha", this._localDiffusionUniform.cropAlpha);
+            material.setProperty("enableFog", this._localDiffusionUniform.enableFog);
             renderComponent.setMaterial(0, material);
         });
     }
@@ -73,4 +75,9 @@ export class LocalDiffusionUniform {
      * 是否裁剪掉透明区域上的点光
      */
     cropAlpha: boolean = true;
+
+    /**
+     * 是否开启战争迷雾效果
+     */
+    enableFog: boolean = false;
 }
