@@ -4,13 +4,13 @@
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
-## 项目说明
+## 一、项目说明
 
 1. 此项目为我在学习过程中的一些分享和实现，因此项目名字以 **`Demo`** 为后缀。
 2. 项目重点在于 **「渔」**，不在于 **「鱼」** 。
 3. 如果你有意将此Demo中的效果加入到你的项目中，**请认真评估是否适合你的项目使用！**
 
-## 系列文章
+## 二、系列文章
 
 * [Cocos Creator Shader Effect 系列 - 0 - 前言](https://www.jianshu.com/p/20b906d7269c)
 * [Cocos Creator Shader Effect 系列 - 1 - 材质，Effect，Inspector，纹理之间的关系](https://www.jianshu.com/p/ca28666d25d2)
@@ -22,10 +22,14 @@
 
 * 编写中...
 
-
-## 特效预览
-
 那么现在，我们先来轻松地看下有哪些特效效果吧~
+
+## 三、特效预览
+
+
+### 点光（实现原理，可能在编写中，催更可到底部扫码，支持急件~🤣）(2020.01.12更新）
+
+![](static/effects/2d-sprite-point-light.gif)
 
 ### 内发光（[实现原理](https://www.jianshu.com/p/326b73f86ecc)）
 
@@ -56,16 +60,15 @@
 
 ### 外描边（完善中...）
 
-## TODO
+## 四、TODO
 
-* [ ] 图像裁剪
 * [ ] 图像模糊
 * [ ] 闪光
 * [ ] 波浪
 * [ ] 雨滴
 * [ ] ...
 
-## 支持一下作者吧
+## 五、支持一下作者吧
 
 如果此项目对你学习和理解Shader有帮助，不妨支持一下我吧~
 
