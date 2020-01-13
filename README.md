@@ -19,6 +19,8 @@
 * [Cocos Creator Shader Effect 系列 - 4 - 老照片特效](https://www.jianshu.com/p/711a54ff2fa0)
 * [Cocos Creator Shader Effect 系列 - 5 - 马赛克/像素化特效](https://www.jianshu.com/p/40e72ab76afd)
 * [Cocos Creator Shader Effect 系列 - 6 - 内发光特效](https://www.jianshu.com/p/326b73f86ecc)
+* [Cocos Creator Shader Effect 系列 - 7 - 点光/扫光特效](https://www.jianshu.com/p/8ff03b34b0bd)
+
 
 * 编写中...
 
@@ -26,11 +28,11 @@
 
 ## 三、特效预览
 
-### 扫光（实现原理，可能在编写中，催更可到底部扫码，支持急件~🤣）(2020.01.13更新）
+### 扫光（实现原理同点光一样，可参考[点光实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）(2020.01.13更新）
 
 ![](static/effects/2d-sprite-flash-light.gif)
 
-### 点光（实现原理，可能在编写中，催更可到底部扫码，支持急件~🤣）(2020.01.12更新）
+### 点光（[实现原理](https://www.jianshu.com/p/8ff03b34b0bd)）(2020.01.12更新）
 
 ![](static/effects/2d-sprite-point-light.gif)
 
