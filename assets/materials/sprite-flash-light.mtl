@@ -8,7 +8,7 @@
   },
   "_defines": {
     "USE_TEXTURE": true,
-    "ENABLE_DIFFUSION": true
+    "ENABLE_LIGHT": true
   },
   "_props": {
     "lightColor": {

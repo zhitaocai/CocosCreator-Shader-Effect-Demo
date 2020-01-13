@@ -35,6 +35,7 @@ CCEffect %{
             tooltip: "光束中心点坐标" 
           }
         }
+        
         # 光束倾斜角度
         lightAngle: {
           value: 36.0,
@@ -125,7 +126,7 @@ CCProgram fs %{
   uniform sampler2D texture;
   #endif
 
-  #if ENABLE_DIFFUSION
+  #if ENABLE_LIGHT
   uniform Light {
     // 光束颜色
     vec4 lightColor;
@@ -156,6 +157,11 @@ CCProgram fs %{
    * 添加光束颜色
    */
   vec4 addLightColor(vec4 textureColor, vec4 lightColor, vec2 lightCenterPoint, float lightAngle, float lightWidth) {
+    // 边界值处理，没有宽度就返回原始颜色
+    if (lightWidth <= 0.0) {
+      return textureColor;
+    }
+
     // 计算当前 uv 到 光束 的距离
     float angleInRadians = radians(lightAngle);
 
@@ -222,7 +228,7 @@ CCProgram fs %{
 
     gl_FragColor = o;
     
-    #if ENABLE_DIFFUSION
+    #if ENABLE_LIGHT
     gl_FragColor = addLightColor(gl_FragColor, lightColor, lightCenterPoint, lightAngle, lightWidth);
     #endif
   }
