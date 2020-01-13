@@ -10,5 +10,15 @@
     "USE_TEXTURE": true,
     "ENABLE_DIFFUSION": true
   },
-  "_props": {}
+  "_props": {
+    "lightColor": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 245,
+      "b": 0,
+      "a": 255
+    },
+    "lightAngle": 36,
+    "lightWidth": 0.2
+  }
 }

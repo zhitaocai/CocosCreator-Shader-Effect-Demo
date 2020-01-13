@@ -12,9 +12,12 @@ export default class FlashLightEffectScene extends cc.Component {
     private _blueSliderLabel: cc.Label = null;
     private _alphaSlider: cc.Slider = null;
     private _alphaSliderLabel: cc.Label = null;
-    private _radiuSlider: cc.Slider = null;
-    private _radiuSliderLabel: cc.Label = null;
+    private _lightWidthSlider: cc.Slider = null;
+    private _lightWidthSliderLabel: cc.Label = null;
+    private _lightAngleSlider: cc.Slider = null;
+    private _lightAngleSliderLabel: cc.Label = null;
 
+    private _enableGradientToggle: cc.Toggle = null;
     private _cropAlphaToggle: cc.Toggle = null;
     private _enableFogToggle: cc.Toggle = null;
 
@@ -31,9 +34,12 @@ export default class FlashLightEffectScene extends cc.Component {
         this._blueSliderLabel = cc.find("Canvas/Content/Controller/ColorBlueSlider/ValueLabel").getComponent(cc.Label);
         this._alphaSlider = cc.find("Canvas/Content/Controller/ColorAlphaSlider/Slider").getComponent(cc.Slider);
         this._alphaSliderLabel = cc.find("Canvas/Content/Controller/ColorAlphaSlider/ValueLabel").getComponent(cc.Label);
-        this._radiuSlider = cc.find("Canvas/Content/Controller/RadiuSlider/Slider").getComponent(cc.Slider);
-        this._radiuSliderLabel = cc.find("Canvas/Content/Controller/RadiuSlider/ValueLabel").getComponent(cc.Label);
+        this._lightWidthSlider = cc.find("Canvas/Content/Controller/LightWidthSlider/Slider").getComponent(cc.Slider);
+        this._lightWidthSliderLabel = cc.find("Canvas/Content/Controller/LightWidthSlider/ValueLabel").getComponent(cc.Label);
+        this._lightAngleSlider = cc.find("Canvas/Content/Controller/LightAngleSlider/Slider").getComponent(cc.Slider);
+        this._lightAngleSliderLabel = cc.find("Canvas/Content/Controller/LightAngleSlider/ValueLabel").getComponent(cc.Label);
 
+        this._enableGradientToggle = cc.find("Canvas/Content/Controller/EnableGradientToggle/Toggle").getComponent(cc.Toggle);
         this._cropAlphaToggle = cc.find("Canvas/Content/Controller/CropAlphaToggle/Toggle").getComponent(cc.Toggle);
         this._enableFogToggle = cc.find("Canvas/Content/Controller/EnableFogToggle/Toggle").getComponent(cc.Toggle);
 
@@ -49,7 +55,10 @@ export default class FlashLightEffectScene extends cc.Component {
         this._greenSlider.node.on("slide", this._onPropertyChanged, this);
         this._blueSlider.node.on("slide", this._onPropertyChanged, this);
         this._alphaSlider.node.on("slide", this._onPropertyChanged, this);
-        this._radiuSlider.node.on("slide", this._onPropertyChanged, this);
+        this._lightWidthSlider.node.on("slide", this._onPropertyChanged, this);
+        this._lightAngleSlider.node.on("slide", this._onPropertyChanged, this);
+
+        this._enableGradientToggle.node.on("toggle", this._onPropertyChanged, this);
         this._cropAlphaToggle.node.on("toggle", this._onPropertyChanged, this);
         this._enableFogToggle.node.on("toggle", this._onPropertyChanged, this);
     }
@@ -59,7 +68,10 @@ export default class FlashLightEffectScene extends cc.Component {
         this._greenSlider.node.off("slide", this._onPropertyChanged, this);
         this._blueSlider.node.off("slide", this._onPropertyChanged, this);
         this._alphaSlider.node.off("slide", this._onPropertyChanged, this);
-        this._radiuSlider.node.off("slide", this._onPropertyChanged, this);
+        this._lightWidthSlider.node.off("slide", this._onPropertyChanged, this);
+        this._lightAngleSlider.node.off("slide", this._onPropertyChanged, this);
+
+        this._enableGradientToggle.node.off("toggle", this._onPropertyChanged, this);
         this._cropAlphaToggle.node.off("toggle", this._onPropertyChanged, this);
         this._enableFogToggle.node.off("toggle", this._onPropertyChanged, this);
     }
@@ -74,18 +86,23 @@ export default class FlashLightEffectScene extends cc.Component {
         this._greenSliderLabel.string = `${this._greenSlider.progress.toFixed(2)} | ${Math.round(255 * this._greenSlider.progress)}`;
         this._blueSliderLabel.string = `${this._blueSlider.progress.toFixed(2)} | ${Math.round(255 * this._blueSlider.progress)}`;
         this._alphaSliderLabel.string = `${this._alphaSlider.progress.toFixed(2)} | ${Math.round(255 * this._alphaSlider.progress)}`;
-        this._radiuSliderLabel.string = `${this._radiuSlider.progress.toFixed(2)}`;
+        this._lightWidthSliderLabel.string = `${this._lightWidthSlider.progress.toFixed(2)}`;
+
+        let angle = 180 * this._lightAngleSlider.progress;
+        this._lightAngleSliderLabel.string = `${this._lightAngleSlider.progress.toFixed(2)} | ${angle.toFixed(2)}`;
 
         // 通知子节点更新材质
         this._examplesParentNode.children.forEach(childNode => {
             childNode.emit("on_property_change", <FlashLightUBO>{
-                centerColor: cc.color(
+                lightColor: cc.color(
                     Math.round(255 * this._redSlider.progress),
                     Math.round(255 * this._greenSlider.progress),
                     Math.round(255 * this._blueSlider.progress),
                     Math.round(255 * this._alphaSlider.progress)
                 ),
-                radius: this._radiuSlider.progress,
+                lightAngle: angle,
+                lightWidth: this._lightWidthSlider.progress,
+                enableGradient: this._enableGradientToggle.isChecked,
                 cropAlpha: this._cropAlphaToggle.isChecked,
                 enableFog: this._enableFogToggle.isChecked
             });

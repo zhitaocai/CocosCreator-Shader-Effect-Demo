@@ -26,7 +26,7 @@ export default class FlashLightCtrlComponent extends cc.Component {
 
         // 将触摸点转换为OPENGL坐标系并归一化
         // OpenGl 坐标系原点在左上角
-        this._flashLightUBO.certerPoint = cc.v2(
+        this._flashLightUBO.lightCenterPoint = cc.v2(
             this.node.anchorX + touchPointInNodeSpace.x / this.node.width,
             1 - (this.node.anchorY + touchPointInNodeSpace.y / this.node.height)
         );
@@ -35,8 +35,10 @@ export default class FlashLightCtrlComponent extends cc.Component {
     }
 
     private _onPropertyChange(localDiffusionUniform: FlashLightUBO) {
-        this._flashLightUBO.centerColor = localDiffusionUniform.centerColor;
-        this._flashLightUBO.radius = localDiffusionUniform.radius;
+        this._flashLightUBO.lightColor = localDiffusionUniform.lightColor;
+        this._flashLightUBO.lightAngle = localDiffusionUniform.lightAngle;
+        this._flashLightUBO.lightWidth = localDiffusionUniform.lightWidth;
+        this._flashLightUBO.enableGradient = localDiffusionUniform.enableGradient;
         this._flashLightUBO.cropAlpha = localDiffusionUniform.cropAlpha;
         this._flashLightUBO.enableFog = localDiffusionUniform.enableFog;
         this._updateMaterial();
@@ -45,9 +47,11 @@ export default class FlashLightCtrlComponent extends cc.Component {
     private _updateMaterial() {
         this.getComponents(cc.RenderComponent).forEach(renderComponent => {
             let material: cc.Material = renderComponent.getMaterial(0);
-            material.setProperty("centerColor", this._flashLightUBO.centerColor);
-            material.setProperty("centerPoint", this._flashLightUBO.certerPoint);
-            material.setProperty("radius", this._flashLightUBO.radius);
+            material.setProperty("lightColor", this._flashLightUBO.lightColor);
+            material.setProperty("lightCenterPoint", this._flashLightUBO.lightCenterPoint);
+            material.setProperty("lightAngle", this._flashLightUBO.lightAngle);
+            material.setProperty("lightWidth", this._flashLightUBO.lightWidth);
+            material.setProperty("enableGradient", this._flashLightUBO.enableGradient);
             material.setProperty("cropAlpha", this._flashLightUBO.cropAlpha);
             material.setProperty("enableFog", this._flashLightUBO.enableFog);
             renderComponent.setMaterial(0, material);
@@ -59,17 +63,27 @@ export class FlashLightUBO {
     /**
      * 中心点颜色
      */
-    centerColor: cc.Color = cc.Color.YELLOW;
+    lightColor: cc.Color = cc.Color.YELLOW;
 
     /**
      * 中心点坐标 ([0.0, 1.0], [0.0, 1.0])
      */
-    certerPoint: cc.Vec2 = cc.v2(0.5, 0.5);
+    lightCenterPoint: cc.Vec2 = cc.v2(0.5, 0.5);
 
     /**
-     * 扩散半径 [0.0, 1.0]
+     * 光束角度 [0.0, 180.0]
      */
-    radius: number = 0.5;
+    lightAngle: number = 45;
+
+    /**
+     * 光束宽度 [0.0, 1.0]
+     */
+    lightWidth: number = 0.5;
+
+    /**
+     * 是否启用光束渐变
+     */
+    enableGradient: boolean = true;
 
     /**
      * 是否裁剪掉透明区域上的点光

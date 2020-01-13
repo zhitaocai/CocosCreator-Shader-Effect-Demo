@@ -37,7 +37,7 @@ CCEffect %{
         }
         # 光束倾斜角度
         lightAngle: {
-          valu: 45.0,
+          value: 36.0,
           inspctor: {
             tooltip: "光束倾斜角度",
             range: [0.0, 1.0],
@@ -46,17 +46,33 @@ CCEffect %{
 
         # 光束宽度
         lightWidth: {
-          value: 0.4,
+          value: 0.2,
           inspector: {
             tooltip: "光束宽度"
           }
         }
 
         # 启用光束渐变
-        enablGradient: {
-          value: 0,
+        enableGradient: {
+          value: 1.0,
           inspecator: {
             tooltip: "是否启用光束渐变。0：不启用，非0：启用"
+          }
+        }
+
+        # 裁剪掉透明区域上的光
+        cropAlpha: {
+          value: 1.0,
+          inspecator: {
+            tooltip: "是否裁剪透明区域上的光。0：不启用，非0：启用"
+          }
+        }
+
+        # 是否启用迷雾效果
+        enableFog: {
+          value: 0.0,
+          inspecator: {
+            tooltip: "是否启用迷雾效果。0：不启用，非0：启用"
           }
         }
 }%
@@ -124,49 +140,70 @@ CCProgram fs %{
     float lightWidth;
 
     // 启用光束渐变
-    float enablGradient;
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float enableGradient;
 
-    // 裁剪掉透明区域上的点光
-    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
-    bool cropAlpha;   
+    // 裁剪掉透明区域上的光
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float cropAlpha;   
 
     // 是否启用迷雾效果
-    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
-    bool enableFog;
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float enableFog;
   }
 
-  // /**
-  //  * 添加光束颜色
-  //  */
-  // vec4 addLightColor(vec4 textureColor, vec2 lightCenterPoint, float radius, vec4 lightColor) {
-  //   // 计算当前 uv 到 光束 的距离
-  //   float dis = distance(v_uv0, lightCenterPoint);
+  /**
+   * 添加光束颜色
+   */
+  vec4 addLightColor(vec4 textureColor, vec4 lightColor, vec2 lightCenterPoint, float lightAngle, float lightWidth) {
+    // 计算当前 uv 到 光束 的距离
+    float angleInRadians = radians(lightAngle);
 
-  //   float a = 1.0 ;
+    // 角度0与非0不同处理
+    float dis = 0.0;
+    if (mod(lightAngle, 180.0) != 0.0) {
+      // 计算光束中心线下方与X轴交点的X坐标
+      // 1.0 - lightCenterPoint.y 是将转换为OpenGL坐标系，下文的 1.0 - y 类似
+      float lightOffsetX = lightCenterPoint.x - ((1.0 - lightCenterPoint.y) / tan(angleInRadians));
 
-  //   // 裁剪掉透明区域上的点光
-  //   if (cropAlpha) {
-  //     a *= step(0.01, textureColor.a);
-  //   }
+      // 以当前点画一条平行于X轴的线，假设此线和光束中心线相交的点为D点
+      // 那么
+      // D.y = uv0.y
+      // D.x = lightOffsetX + D.y / tan(angle)
+      float dx = lightOffsetX + (1.0 - v_uv0.y) / tan(angleInRadians);
 
-  //   // 裁剪掉扩散范围外的uv（迷雾效果）
-  //   if (!enableFog) {
-  //     a *= step(dis, radius);
-  //   }
+      // D 到当前 uv0 的距离就是
+      // dis = |uv0.x - D.x|
+      float offsetDis = abs(v_uv0.x - dx);
 
-  //   // 加入从中心往外渐变的效果
-  //   a *= 1.0 - (dis / radius);
+      // 当前点到光束中心线的的垂直距离就好算了
+      dis = sin(angleInRadians) * offsetDis;
+    } else {
+      dis = abs(v_uv0.y - lightCenterPoint.y);
+    }
+    
+    float a = 1.0 ;
+    // 裁剪掉透明区域上的点光
+    if (bool(cropAlpha)) {
+      a *= step(0.01, textureColor.a);
+    }
 
-  //   // 加点料，让中心点更加亮
-  //   // a = -1.0 * (a - 1.0) * (a - 1.0) + 1.0;
-  //   // a = -1.0 * (a - 1.0) * (a - 1.0) * (a - 1.0) * (a - 1.0) + 1.0;
+    // 裁剪掉光束范围外的uv（迷雾效果）
+    if (!bool(enableFog)) {
+      a *= step(dis, lightWidth * 0.5);
+    }
 
-  //   // 计算出扩散范围内，不同 uv 对应的实际扩散颜色值
-  //   vec4 diffusionColor = lightColor * a;
+    // 加入从中心往外渐变的效果
+    if (bool(enableGradient)) {
+      a *= 1.0 - dis / (lightWidth * 0.5);
+    }
 
-  //   // 混合颜色：在原始图像颜色上叠加扩散颜色
-  //   return textureColor * textureColor.a + diffusionColor;
-  // }
+    // 计算出扩散范围内，不同 uv 对应的实际扩散颜色值
+    vec4 finalLightColor = lightColor * a;
+
+    // 混合颜色：在原始图像颜色上叠加扩散颜色
+    return textureColor * textureColor.a + finalLightColor;
+  }
   #endif
 
   void main () {
@@ -186,7 +223,7 @@ CCProgram fs %{
     gl_FragColor = o;
     
     #if ENABLE_DIFFUSION
-    // gl_FragColor = addLightColor(gl_FragColor, lightCenterPoint, radius, lightColor);
+    gl_FragColor = addLightColor(gl_FragColor, lightColor, lightCenterPoint, lightAngle, lightWidth);
     #endif
   }
 }%
