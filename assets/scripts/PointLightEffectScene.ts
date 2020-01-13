@@ -1,4 +1,4 @@
-import PointLightCtrlComponent, { PointLightUniform } from "./PointLightCtrlComponent";
+import PointLightCtrlComponent, { PointLightUBO } from "./PointLightCtrlComponent";
 
 const { ccclass, property } = cc._decorator;
 
@@ -78,7 +78,7 @@ export default class PointLightEffectScene extends cc.Component {
 
         // 通知子节点更新材质
         this._examplesParentNode.children.forEach(childNode => {
-            childNode.emit("on_property_change", <PointLightUniform>{
+            childNode.emit("on_property_change", <PointLightUBO>{
                 centerColor: cc.color(
                     Math.round(255 * this._redSlider.progress),
                     Math.round(255 * this._greenSlider.progress),
