@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.3.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.5.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -26,6 +26,9 @@
 
 ## 三、特效预览
 
+### 扫光（实现原理，可能在编写中，催更可到底部扫码，支持急件~🤣）(2020.01.13更新）
+
+![](static/effects/2d-sprite-flash-light.gif)
 
 ### 点光（实现原理，可能在编写中，催更可到底部扫码，支持急件~🤣）(2020.01.12更新）
 
@@ -63,7 +66,6 @@
 ## 四、TODO
 
 * [ ] 图像模糊
-* [ ] 闪光
 * [ ] 波浪
 * [ ] 雨滴
 * [ ] ...

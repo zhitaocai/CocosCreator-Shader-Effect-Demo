@@ -1,0 +1,235 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+// 闪光（光速扫过）
+// 原理（和点光的很类似）：
+// 1. 画光束
+// 2. 圆心中间高亮（透明度=1.0），边缘不亮（透明度=0.0）
+// 3. 在原图像上方叠加光束
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+
+        # 光束颜色
+        lightColor: {
+          value: [1.0, 1.0, 0.0, 1.0], 
+          inspector: { 
+            type: color,
+            tooltip: "光束颜色"
+          } 
+        }
+
+        # 光束中心点坐标
+        lightCenterPoint: {
+          value: [0.2, 0.2],
+          inspector: {
+            tooltip: "光束中心点坐标" 
+          }
+        }
+        
+        # 光束倾斜角度
+        lightAngle: {
+          value: 36.0,
+          inspctor: {
+            tooltip: "光束倾斜角度",
+            range: [0.0, 1.0],
+          } 
+        }
+
+        # 光束宽度
+        lightWidth: {
+          value: 0.2,
+          inspector: {
+            tooltip: "光束宽度"
+          }
+        }
+
+        # 启用光束渐变
+        enableGradient: {
+          value: 1.0,
+          inspecator: {
+            tooltip: "是否启用光束渐变。0：不启用，非0：启用"
+          }
+        }
+
+        # 裁剪掉透明区域上的光
+        cropAlpha: {
+          value: 1.0,
+          inspecator: {
+            tooltip: "是否裁剪透明区域上的光。0：不启用，非0：启用"
+          }
+        }
+
+        # 是否启用迷雾效果
+        enableFog: {
+          value: 0.0,
+          inspecator: {
+            tooltip: "是否启用迷雾效果。0：不启用，非0：启用"
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if ENABLE_LIGHT
+  uniform Light {
+    // 光束颜色
+    vec4 lightColor;
+
+    // 光束中心点坐标
+    vec2 lightCenterPoint;
+    
+    // 光束倾斜角度
+    float lightAngle;
+
+    // 光束宽度
+    float lightWidth;
+
+    // 启用光束渐变
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float enableGradient;
+
+    // 裁剪掉透明区域上的光
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float cropAlpha;   
+
+    // 是否启用迷雾效果
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float enableFog;
+  }
+
+  /**
+   * 添加光束颜色
+   */
+  vec4 addLightColor(vec4 textureColor, vec4 lightColor, vec2 lightCenterPoint, float lightAngle, float lightWidth) {
+    // 边界值处理，没有宽度就返回原始颜色
+    if (lightWidth <= 0.0) {
+      return textureColor;
+    }
+
+    // 计算当前 uv 到 光束 的距离
+    float angleInRadians = radians(lightAngle);
+
+    // 角度0与非0不同处理
+    float dis = 0.0;
+    if (mod(lightAngle, 180.0) != 0.0) {
+      // 计算光束中心线下方与X轴交点的X坐标
+      // 1.0 - lightCenterPoint.y 是将转换为OpenGL坐标系，下文的 1.0 - y 类似
+      float lightOffsetX = lightCenterPoint.x - ((1.0 - lightCenterPoint.y) / tan(angleInRadians));
+
+      // 以当前点画一条平行于X轴的线，假设此线和光束中心线相交的点为D点
+      // 那么
+      // D.y = uv0.y
+      // D.x = lightOffsetX + D.y / tan(angle)
+      float dx = lightOffsetX + (1.0 - v_uv0.y) / tan(angleInRadians);
+
+      // D 到当前 uv0 的距离就是
+      // dis = |uv0.x - D.x|
+      float offsetDis = abs(v_uv0.x - dx);
+
+      // 当前点到光束中心线的的垂直距离就好算了
+      dis = sin(angleInRadians) * offsetDis;
+    } else {
+      dis = abs(v_uv0.y - lightCenterPoint.y);
+    }
+    
+    float a = 1.0 ;
+    // 裁剪掉透明区域上的点光
+    if (bool(cropAlpha)) {
+      a *= step(0.01, textureColor.a);
+    }
+
+    // 裁剪掉光束范围外的uv（迷雾效果）
+    if (!bool(enableFog)) {
+      a *= step(dis, lightWidth * 0.5);
+    }
+
+    // 加入从中心往外渐变的效果
+    if (bool(enableGradient)) {
+      a *= 1.0 - dis / (lightWidth * 0.5);
+    }
+
+    // 计算出扩散范围内，不同 uv 对应的实际扩散颜色值
+    vec4 finalLightColor = lightColor * a;
+
+    // 混合颜色：在原始图像颜色上叠加扩散颜色
+    return textureColor * textureColor.a + finalLightColor;
+  }
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+    
+    #if ENABLE_LIGHT
+    gl_FragColor = addLightColor(gl_FragColor, lightColor, lightCenterPoint, lightAngle, lightWidth);
+    #endif
+  }
+}%
