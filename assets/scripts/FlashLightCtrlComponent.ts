@@ -76,7 +76,7 @@ export class FlashLightUBO {
     lightAngle: number = 45;
 
     /**
-     * 光束宽度 [0.0, 1.0]
+     * 光束宽度 [0.0, +∞]
      */
     lightWidth: number = 0.5;
 
