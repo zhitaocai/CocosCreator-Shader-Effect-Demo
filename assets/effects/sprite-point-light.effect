@@ -117,7 +117,7 @@ CCProgram fs %{
    * 添加某个扩散点后混合后的纹理颜色
    */
   vec4 addLightColor(vec4 textureColor, vec2 centerPoint, float radius, vec4 centerColor) {
-    // 计算当前 uv 到扩散起点的距离
+    // 计算当前 uv 到圆心起点的距离
     float dis = distance(v_uv0, centerPoint);
 
     float a = 1.0 ;
@@ -127,7 +127,7 @@ CCProgram fs %{
       a *= step(0.01, textureColor.a);
     }
 
-    // 裁剪掉扩散范围外的uv（迷雾效果）
+    // 裁剪掉圆范围外的uv（迷雾效果）
     if (!enableFog) {
       a *= step(dis, radius);
     }
@@ -135,11 +135,11 @@ CCProgram fs %{
     // 加入从中心往外渐变的效果
     a *= 1.0 - (dis / radius);
 
-    // 计算出扩散范围内，不同 uv 对应的实际扩散颜色值
-    vec4 diffusionColor = centerColor * a;
+    // 计算出圆范围内，不同 uv 对应的实际颜色值
+    vec4 lightColor = centerColor * a;
 
-    // 混合颜色：在原始图像颜色上叠加扩散颜色
-    return textureColor * textureColor.a + diffusionColor;
+    // 混合颜色：在原始图像颜色上叠加圆颜色
+    return textureColor * textureColor.a + lightColor;
   }
   #endif
 
