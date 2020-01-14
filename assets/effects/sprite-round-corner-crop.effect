@@ -99,7 +99,7 @@ CCProgram fs %{
     // 约束圆角半径范围在 [0.0, 0.5]
     float radius = clamp(0.0, 0.5, roundCornerRadius);
 
-    // 将纹理uv往左下偏移，实现偏移后的纹理中心点在 OpenGL 坐标系的原点
+    // 将纹理uv往左上偏移，实现偏移后的坐标系原点在纹理中心
     vec2 uv = v_uv0.xy - vec2(0.5, 0.5);
 
     // uv.x , uv.y :              为偏移后的的uv
