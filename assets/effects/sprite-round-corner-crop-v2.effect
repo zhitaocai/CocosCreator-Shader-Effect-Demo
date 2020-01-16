@@ -1,5 +1,7 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+//
 // 圆角裁剪（支持任意宽高纹理）
+//
 // 原理：
 //  1. 正方形纹理的圆角原理参考 https://www.cnblogs.com/jqm304775992/p/4987793.html 
 //  2. 正方形纹理的圆角代码参考 yanjifa/shaderDemor 的 https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect

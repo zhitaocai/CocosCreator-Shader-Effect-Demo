@@ -1,9 +1,9 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class RoundCornerCropEffectScene extends cc.Component {
-    private _roundCornerRadiuSlider: cc.Slider = null;
-    private _roundCornerRadiuLabel: cc.Label = null;
+export default class RoundCornerCropV1EffectScene extends cc.Component {
+    private _radiuSlider: cc.Slider = null;
+    private _radiuLabel: cc.Label = null;
 
     private _examplesParentNode: cc.Node = null;
 
@@ -11,18 +11,18 @@ export default class RoundCornerCropEffectScene extends cc.Component {
         // 关闭动态合图
         cc.dynamicAtlasManager.enabled = false;
 
-        this._roundCornerRadiuSlider = cc.find("Canvas/Content/Sliders/RoundCornerRadiusSlider/Slider").getComponent(cc.Slider);
-        this._roundCornerRadiuLabel = cc.find("Canvas/Content/Sliders/RoundCornerRadiusSlider/ValueLabel").getComponent(cc.Label);
+        this._radiuSlider = cc.find("Canvas/Content/Controller/RadiusSlider/Slider").getComponent(cc.Slider);
+        this._radiuLabel = cc.find("Canvas/Content/Controller/RadiusSlider/ValueLabel").getComponent(cc.Label);
 
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
     }
 
     onEnable() {
-        this._roundCornerRadiuSlider.node.on("slide", this._onSliderChanged, this);
+        this._radiuSlider.node.on("slide", this._onSliderChanged, this);
     }
 
     onDisable() {
-        this._roundCornerRadiuSlider.node.off("slide", this._onSliderChanged, this);
+        this._radiuSlider.node.off("slide", this._onSliderChanged, this);
     }
 
     start() {
@@ -30,11 +30,11 @@ export default class RoundCornerCropEffectScene extends cc.Component {
     }
 
     private _onSliderChanged() {
-        this._roundCornerRadiuLabel.string = `${this._roundCornerRadiuSlider.progress.toFixed(2)}`;
+        this._radiuLabel.string = `${this._radiuSlider.progress.toFixed(2)}`;
 
         // 更新材质
         this._updateRenderComponentMaterial({
-            roundCornerRadius: this._roundCornerRadiuSlider.progress
+            roundCornerRadius: this._radiuSlider.progress
         });
     }
 
@@ -54,7 +54,7 @@ export default class RoundCornerCropEffectScene extends cc.Component {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("roundCornerRadius", param.roundCornerRadius);
+                material.setProperty("radius", param.roundCornerRadius);
                 renderComponent.setMaterial(0, material);
             });
         });
