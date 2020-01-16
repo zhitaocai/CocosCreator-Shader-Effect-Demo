@@ -156,13 +156,38 @@ CCProgram fs %{
     // 判断点(rx, ry)是否在椭圆外部（应用椭圆公式）
     float isOutOfEllipse = step(1.0, pow(rx, 2.0) / pow(xRadius, 2.0) + pow(ry, 2.0) / pow(yRadius, 2.0));
 
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // 抗锯齿
+    // 1. 先计算当前点到椭圆中心的角度
+    float angleInRadian = atan(ry / rx);
+
+    // 2. 计算这个角度下，对于对应圆角（椭圆）上的点 
+    vec2 pointInEllipse = vec2(xRadius * cos(angleInRadian), yRadius * sin(angleInRadian));
+
+    // 3. 计算这个角度下，比当前圆角大一点椭圆上的点
+    vec2 pointInBigEllipse = vec2((xRadius * 1.01) * cos(angleInRadian), (yRadius * 1.01)* sin(angleInRadian));
+
+    // 4. 计算最远点到当前椭圆的距离
+    float maxDis = distance(pointInBigEllipse, pointInEllipse);
+
+    // 5. 计算当前点到当前椭圆的距离
+    float curDis = distance(vec2(rx, ry), pointInEllipse);
+
+    // 6. 生成插值
+    float smo = smoothstep(0.0, maxDis, curDis);
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
     // mx * my = 0 时，代表非椭圆角区域，alpha 值为1，代表完全采用原始纹理的透明度
     // mx * my = 1 时，代表椭圆角所在矩形区域
     //  isOutOfEllipse: 
     //    当点在椭圆外部时，此值为1，导致 alpha 最终值为0.0，即表示不显示椭圆外部的像素
     //    当点在椭圆内部时，此值为0，导致 alpha 最终值为1.0，即表示显示椭圆内部的像素
-    float alpha = 1.0 - mx * my * isOutOfEllipse;
+    //  smo : 抗锯齿实现
+    // float alpha = 1.0 - mx * my * isOutOfEllipse;
+    float alpha = 1.0 - mx * my * isOutOfEllipse * smo;
+
     o = vec4(o.rgb, o.a * alpha);
+
     #endif
     gl_FragColor = o;
   }

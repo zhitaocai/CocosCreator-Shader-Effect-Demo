@@ -925,7 +925,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        230.40000000000006,
+        115.20000000000002,
         0,
         0,
         0,
@@ -1104,7 +1104,7 @@
     "_N$handle": {
       "__id__": 20
     },
-    "_N$progress": 1,
+    "_N$progress": 0.5,
     "_id": "c2uNTLxCdF2oHJ+IS0EBLe"
   },
   {
