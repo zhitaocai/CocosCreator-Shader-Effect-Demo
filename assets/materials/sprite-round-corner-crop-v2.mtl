@@ -1,0 +1,14 @@
+{
+  "__type__": "cc.Material",
+  "_name": "",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "7c24b57e-e819-4fc9-a8d2-b06cf61b782d"
+  },
+  "_defines": {
+    "USE_TEXTURE": true,
+    "ENABLE_ROUNDCORNER": true
+  },
+  "_props": {}
+}
