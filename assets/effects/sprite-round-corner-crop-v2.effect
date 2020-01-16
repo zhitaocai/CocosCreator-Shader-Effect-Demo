@@ -23,7 +23,7 @@ CCEffect %{
 
         # 圆角x轴半径长度（相对于纹理宽度）
         xRadius: {
-          value: 0.1026,
+          value: 0.4,
           inspector: {
             tooltip: "圆角x轴半径长度（相对于纹理宽度）",
             range: [0.0, 0.5]
@@ -32,9 +32,9 @@ CCEffect %{
 
         # 圆角y轴半径长度（相对于纹理高度）
         yRadius: {
-          value: 0.0741,
+          value: 0.4,
           inspector: {
-            tooltip: "圆角x轴半径长度（相对于纹理高度）",
+            tooltip: "圆角y轴半径长度（相对于纹理高度）",
             range: [0.0, 0.5]
           }
         }

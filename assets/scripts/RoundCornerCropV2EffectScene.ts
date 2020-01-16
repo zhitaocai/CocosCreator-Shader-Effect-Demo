@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class RoundCornerCropV1EffectScene extends cc.Component {
+export default class RoundCornerCropV2EffectScene extends cc.Component {
     private _radiuSlider: cc.Slider = null;
     private _radiuLabel: cc.Label = null;
 
@@ -30,11 +30,13 @@ export default class RoundCornerCropV1EffectScene extends cc.Component {
     }
 
     private _onSliderChanged() {
-        this._radiuLabel.string = `${this._radiuSlider.progress.toFixed(2)}`;
+        // 计算半径px
+        let radiusInPx = Math.floor(100 * this._radiuSlider.progress);
+        this._radiuLabel.string = radiusInPx + "";
 
         // 更新材质
         this._updateRenderComponentMaterial({
-            radius: this._radiuSlider.progress
+            radiusInPx: radiusInPx
         });
     }
 
@@ -47,14 +49,28 @@ export default class RoundCornerCropV1EffectScene extends cc.Component {
      */
     private _updateRenderComponentMaterial(param: {
         /**
-         * 圆角半径 [0.0, 0.5] ，0.5 表示圆形裁剪
+         * 圆角半径px
          */
-        radius: number;
+        radiusInPx: number;
     }) {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
+                // 计算半径px分别相对于纹理宽高的比例（也叫归一化）
+                let xRadiux = param.radiusInPx / renderComponent.node.width;
+                // 约束范围在区间 [0.0, 0.5] 
+                xRadiux = xRadiux >= 0.5 ? 0.5 : xRadiux;
+
+                let yRadius = param.radiusInPx / renderComponent.node.height;
+                yRadius = yRadius >= 0.5 ? 0.5 : yRadius;
+
+                // 更新材质
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("radius", param.radius);
+
+                // 圆角x轴半径长度（相对于纹理宽度）[0.0, 0.5]
+                material.setProperty("xRadius", xRadiux);
+
+                // 圆角y轴半径长度（相对于纹理高度）[0.0, 0.5]
+                material.setProperty("yRadius", yRadius);
                 renderComponent.setMaterial(0, material);
             });
         });

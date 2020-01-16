@@ -20,7 +20,7 @@ CCEffect %{
         alphaThreshold: { value: 0.5 }
         # 圆角半径
         radius: {
-          value: 0.1,
+          value: 0.4,
           inspector: {
             tooltip: "圆角半径",
             range: [0.0, 0.5]

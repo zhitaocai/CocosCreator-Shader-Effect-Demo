@@ -78,10 +78,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 41
+        "__id__": 39
       },
       {
-        "__id__": 42
+        "__id__": 40
       }
     ],
     "_prefab": null,
@@ -251,7 +251,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 40
+        "__id__": 38
       }
     ],
     "_prefab": null,
@@ -1332,18 +1332,15 @@
       },
       {
         "__id__": 34
-      },
-      {
-        "__id__": 36
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 38
+        "__id__": 36
       },
       {
-        "__id__": 39
+        "__id__": 37
       }
     ],
     "_prefab": null,
@@ -1358,7 +1355,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 629.73
+      "height": 564
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1490,7 +1487,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "cocos_logo",
+    "_name": "Rectangle1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 29
@@ -1507,14 +1504,14 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
-      "g": 255,
-      "b": 255,
+      "g": 0,
+      "b": 0,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 195,
-      "height": 270
+      "width": 200,
+      "height": 100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1526,7 +1523,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -387,
+        -302,
         0,
         0,
         0,
@@ -1548,7 +1545,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "25JHa6EcNEBZ1hoesQM1Q4"
+    "_id": "2eSZfgubZMxpkxf6Wv6VoZ"
   },
   {
     "__type__": "cc.Sprite",
@@ -1566,10 +1563,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "31bc895a-c003-4566-a9f3-2e54ae1c17dc"
+      "__uuid__": "a23235d1-15db-4b95-8439-a2e005bfff91"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -1580,11 +1577,11 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": null,
-    "_id": "74+WCqN01NIbcSpr5gcxmE"
+    "_id": "2enlbFjsJLJqVy8iYfWwca"
   },
   {
     "__type__": "cc.Node",
-    "_name": "SystemFont",
+    "_name": "Rectangle2",
     "_objFlags": 0,
     "_parent": {
       "__id__": 29
@@ -1602,13 +1599,13 @@
       "__type__": "cc.Color",
       "r": 255,
       "g": 255,
-      "b": 255,
+      "b": 0,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 224.51,
-      "height": 50.4
+      "width": 100,
+      "height": 200
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1620,7 +1617,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -559.2,
+        -464,
         0,
         0,
         0,
@@ -1642,10 +1639,10 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "5dfIaYLgJPQKk50HqrgyHI"
+    "_id": "eeRQw29nZJXYOderYE6uKz"
   },
   {
-    "__type__": "cc.Label",
+    "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -1657,116 +1654,24 @@
         "__uuid__": "642c2d0e-7eb6-4d65-96f2-d6e0d0305310"
       }
     ],
-    "_useOriginalSize": false,
-    "_string": "System Font",
-    "_N$string": "System Font",
-    "_fontSize": 40,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
-    "_N$cacheMode": 0,
-    "_id": "d1whc7H8RHdrROcYj+2Qh1"
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "BmFont",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 29
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "a23235d1-15db-4b95-8439-a2e005bfff91"
     },
-    "_children": [],
-    "_active": true,
-    "_components": [
-      {
-        "__id__": 37
-      }
-    ],
-    "_prefab": null,
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 167.5,
-      "height": 33.33
-    },
-    "_anchorPoint": {
+    "_type": 0,
+    "_sizeMode": 0,
+    "_fillType": 0,
+    "_fillCenter": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        -613.065,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
-      "z": 0
+      "y": 0
     },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
-    "_id": "e4XmdmRoVPxKoDxfbOgm42"
-  },
-  {
-    "__type__": "cc.Label",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 36
-    },
-    "_enabled": true,
-    "_materials": [
-      {
-        "__uuid__": "642c2d0e-7eb6-4d65-96f2-d6e0d0305310"
-      }
-    ],
-    "_useOriginalSize": false,
-    "_string": "BM Font",
-    "_N$string": "BM Font",
-    "_fontSize": 40,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "4c95de7e-8cca-47bf-a446-47b7594e0992"
-    },
-    "_isSystemFontUsed": false,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
-    "_N$cacheMode": 0,
-    "_id": "7cXLgoUJhDP7BPjr4yx+Ep"
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_atlas": null,
+    "_id": "0c/FhoiupJMaG6rjicnytU"
   },
   {
     "__type__": "cc.Widget",
@@ -1806,7 +1711,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 629.73
+      "height": 564
     },
     "_resize": 1,
     "_N$layoutType": 2,
