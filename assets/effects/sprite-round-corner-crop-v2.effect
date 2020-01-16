@@ -154,7 +154,7 @@ CCProgram fs %{
     float my = step(0.5 - ellipseYRadius, abs(uv.y));
 
     // 判断点(rx, ry)是否在椭圆外部（应用椭圆公式）
-    float isOutOfEllipse = step(1.0, pow(rx, 2.0) / pow(max(xRadius, yRadius), 2.0) + pow(ry, 2.0) / pow(min(xRadius, yRadius), 2.0));
+    float isOutOfEllipse = step(1.0, pow(rx, 2.0) / pow(xRadius, 2.0) + pow(ry, 2.0) / pow(yRadius, 2.0));
 
     // mx * my = 0 时，代表非椭圆角区域，alpha 值为1，代表完全采用原始纹理的透明度
     // mx * my = 1 时，代表椭圆角所在矩形区域

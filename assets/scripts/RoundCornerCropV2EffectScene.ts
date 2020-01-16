@@ -56,12 +56,14 @@ export default class RoundCornerCropV2EffectScene extends cc.Component {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 // 计算半径px分别相对于纹理宽高的比例（也叫归一化）
-                let xRadiux = param.radiusInPx / renderComponent.node.width;
-                // 约束范围在区间 [0.0, 0.5] 
+                let xRadiux = param.radiusInPx / childNode.width;
+                // 约束范围在区间 [0.0, 0.5]
                 xRadiux = xRadiux >= 0.5 ? 0.5 : xRadiux;
 
-                let yRadius = param.radiusInPx / renderComponent.node.height;
+                let yRadius = param.radiusInPx / childNode.height;
                 yRadius = yRadius >= 0.5 ? 0.5 : yRadius;
+
+                if (childNode.name === "Rectangle1") cc.log(`${childNode.name} : (${xRadiux}, ${yRadius})`);
 
                 // 更新材质
                 let material: cc.Material = renderComponent.getMaterial(0);
