@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.5.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.6.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -28,13 +28,7 @@
 
 ## 三、特效预览
 
-### 扫光（实现原理同点光一样，可参考[点光实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）(2020.01.13更新）
 
-![](static/effects/2d-sprite-flash-light.gif)
-
-### 点光（[实现原理](https://www.jianshu.com/p/8ff03b34b0bd)）(2020.01.12更新）
-
-![](static/effects/2d-sprite-point-light.gif)
 
 ### 内发光（[实现原理](https://www.jianshu.com/p/326b73f86ecc)）
 
@@ -52,14 +46,35 @@
 
 ![](static/effects/2d-sprite-gray.gif)
 
-### 圆角裁剪
+### 点光（[实现原理](https://www.jianshu.com/p/8ff03b34b0bd)）(2020.01.12更新）
+
+![](static/effects/2d-sprite-point-light.gif)
+
+### 扫光（实现原理同点光一样，可参考[点光实现原理文章](https://www.jianshu.com/p/711a54ff2fa0)）(2020.01.13更新）
+
+![](static/effects/2d-sprite-flash-light.gif)
+
+### 圆角裁剪-v1（2020.01.17更新）
 
 > * 声明：此特效为搬运过来的特效，非原创。
 > * 修改的地方：搬运后，在原来的主要代码上加入了自己的理解注释
 > * 实现原理：参考文章 [《圆角计算 Shader》](https://www.cnblogs.com/jqm304775992/p/4987793.html)
 > * 参考代码：Cocos 论坛帖子[《分享更高效的 creator 裁圆角头像 shader》](https://forum.cocos.org/t/creator-shader-2019-10-22-2-2-0/82548) 和对应的 [实现代码](https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect)
 
-![](static/effects/2d-sprite-round-corner-crop.gif)
+**此版本存在局限性：只有在正方形纹理上，才能裁剪出圆角，在非正方形上，无法裁剪出圆角，具体变现为有拉伸效果**
+
+如：下面GIF中第3到5秒演示所示，黄色和红色的非正方形纹理的圆角明显被拉伸
+
+![](static/effects/2d-sprite-round-corner-crop-v1.gif)
+
+### 圆角裁剪-v2（2020.01.17更新）
+
+在 **圆角裁剪-v1** 的原理基础上，新增支持任意纹理的圆角裁剪
+
+如：下面Gif中第3到5秒演示所示，黄色和红色的非正方形纹理也能裁剪出圆角效果
+
+![](static/effects/2d-sprite-round-corner-crop-v2.gif)
+
 
 ### 外发光（完善中...）
 
