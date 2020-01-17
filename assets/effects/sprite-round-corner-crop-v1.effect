@@ -1,5 +1,7 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 圆角裁剪
+//
+// 圆角裁剪（仅支持正方形纹理）
+//
 // 原理：https://www.cnblogs.com/jqm304775992/p/4987793.html
 // 代码：复制 yanjifa/shaderDemor 的 https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect
 
@@ -17,8 +19,8 @@ CCEffect %{
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
         # 圆角半径
-        roundCornerRadius: {
-          value: 0.1,
+        radius: {
+          value: 0.4,
           inspector: {
             tooltip: "圆角半径",
             range: [0.0, 0.5]
@@ -77,7 +79,7 @@ CCProgram fs %{
   #if ENABLE_ROUNDCORNER
   uniform RoundCorner {
     // 圆角半径
-    float roundCornerRadius;
+    float radius;
   }
   #endif
 
@@ -97,17 +99,17 @@ CCProgram fs %{
 
     #if ENABLE_ROUNDCORNER
     // 约束圆角半径范围在 [0.0, 0.5]
-    float radius = clamp(0.0, 0.5, roundCornerRadius);
+    float circleRadius = clamp(0.0, 0.5, radius);
 
-    // 将纹理uv往左下偏移，实现偏移后的纹理中心点在 OpenGL 坐标系的原点
+    // 将纹理uv往左上偏移，实现偏移后的坐标系原点在纹理中心
     vec2 uv = v_uv0.xy - vec2(0.5, 0.5);
 
     // uv.x , uv.y :              为偏移后的的uv
     // abs(uv.x) , abs(uv.y) :    将第二、三、四象限的点都投影到第一象限上，这样子只需要处理第一象限的情况就可以，简化判断
     // 0.5 - radius :             计算出第一象限的圆角所在圆的圆心坐标
     // (rx, ry) :                 偏移映射后的 新的uv 坐标，相对于 第一象限圆角坐在圆心坐标 的相对坐标
-    float rx = abs(uv.x) - (0.5 - radius);
-    float ry = abs(uv.y) - (0.5 - radius);
+    float rx = abs(uv.x) - (0.5 - circleRadius);
+    float ry = abs(uv.y) - (0.5 - circleRadius);
 
     // 区分 以第一象限圆角所在圆心坐标为原点的坐标的四个象限
     //
@@ -117,26 +119,26 @@ CCProgram fs %{
     // 第四象限 mx = 1, my = 0
     // 
     // 当 mx * my 时，只要等于1，那就是标识第一象限（实际对应圆角区域所在矩形），否则就是第二、三、四象限
-    float mx = step(0.5 - radius, abs(uv.x));
-    float my = step(0.5 - radius, abs(uv.y));
+    float mx = step(0.5 - circleRadius, abs(uv.x));
+    float my = step(0.5 - circleRadius, abs(uv.y));
 
     // 计算相对uv坐标到圆心的距离
     float len = length(vec2(rx, ry));
 
     // mx * my = 0 时，代表非圆角区域，a 值为1，代表完全采用原始纹理的透明度
     // mx * my = 1 时，代表园所所在矩形区域
-    //  step(radius, len) 可以区分出圆角所在矩形区域的 圆角区域 和 非圆角区域
+    //  step(circleRadius, len) 可以区分出圆角所在矩形区域的 圆角区域 和 非圆角区域
     //    其中圆角区域值为0，非圆角区域值为1
     //      当为圆角区域时，a 值为1，代表完全采用原始纹理透明度
     //      当为非圆角区域时，a 值为0，代表完全透明
     //    至此已经实现圆角裁剪
     //  
-    //  smoothstep(0., radius * 0.01, len - radius) 是用于抗锯齿优化
+    //  smoothstep(0., circleRadius * 0.01, len - circleRadius) 是用于抗锯齿优化
     //    原理：针对点在非圆角区域的情况，针对点在大于「圆半径一点点」地方的区域，进行平滑过渡，以实现抗锯齿
     //    其中，
-    //      「圆半径一点点」用  radius * 0.01 表示（0.01 可自行改变）
-    //      点在大于圆半径的区域用 len - radius ，此值会在 [0.0, radius * 0.01] 之间时会平滑过渡
-    float a = 1.0 - mx * my * step(radius, len) * smoothstep(0., radius * 0.01, len - radius);
+    //      「圆半径一点点」用  circleRadius * 0.01 表示（0.01 可自行改变）
+    //      点在大于圆半径的区域用 len - circleRadius ，此值会在 [0.0, circleRadius * 0.01] 之间时会平滑过渡
+    float a = 1.0 - mx * my * step(circleRadius, len) * smoothstep(0., circleRadius * 0.01, len - circleRadius);
     o = vec4(o.rgb, o.a * a);
     #endif
     gl_FragColor = o;

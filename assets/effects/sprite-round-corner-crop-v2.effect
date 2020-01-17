@@ -1,0 +1,194 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+//
+// 圆角裁剪（支持任意宽高纹理）
+//
+// 原理：
+//  1. 正方形纹理的圆角原理参考 https://www.cnblogs.com/jqm304775992/p/4987793.html 
+//  2. 正方形纹理的圆角代码参考 yanjifa/shaderDemor 的 https://github.com/yanjifa/shaderDemo/blob/master/assets/Effect/CircleAvatar.effect
+//  3. 上述皆为只针对正方形纹理做的操作，如果是长方形的纹理，那么圆角就会有拉伸后的效果，最后变成看起来就不是圆角了，本特效支持任意长方形做圆角
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+
+        # 圆角x轴半径长度（相对于纹理宽度）
+        xRadius: {
+          value: 0.4,
+          inspector: {
+            tooltip: "圆角x轴半径长度（相对于纹理宽度）",
+            range: [0.0, 0.5]
+          }
+        }
+
+        # 圆角y轴半径长度（相对于纹理高度）
+        yRadius: {
+          value: 0.4,
+          inspector: {
+            tooltip: "圆角y轴半径长度（相对于纹理高度）",
+            range: [0.0, 0.5]
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if ENABLE_ROUNDCORNER
+  uniform RoundCorner {
+    // 圆角x轴半径长度（相对于纹理宽度）
+    float xRadius;
+
+    // 圆角y轴半径长度（相对于纹理高度）
+    float yRadius;
+  }
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    #if ENABLE_ROUNDCORNER
+
+    // 约束圆角半径范围在 [0.0, 0.5]
+    // 
+    // 请注意这里我是用椭圆前缀去命名的半径
+    // 
+    // 为什么是椭圆？
+    // 
+    // 因为圆角，相对于长方形的纹理的宽高来说，归一化后值并不一样，不是圆，而是一个椭圆
+    //
+    // 比如：
+    //
+    // 纹理是 200 x 100 的像素，圆角半径是20像素，那么归一化后
+    //    X轴上的半径就是 20 / 200 = 0.1 
+    //    Y轴上的半径就是 20 / 100 = 0.2
+    //
+    // 这就会变成是椭圆，而不是圆
+    float ellipseXRadius = clamp(0.0, 0.5, xRadius);
+    float ellipseYRadius = clamp(0.0, 0.5, yRadius);
+
+    // 将纹理uv往左上偏移，实现偏移后的坐标系原点在纹理中心
+    vec2 uv = v_uv0.xy - vec2(0.5, 0.5);
+
+    // uv.x , uv.y :              为偏移后的的uv
+    // abs(uv.x) , abs(uv.y) :    将第二、三、四象限的点都投影到第一象限上，这样子只需要处理第一象限的情况就可以，简化判断
+    // 0.5 - radius :             计算出第一象限的圆角所在圆的圆心坐标
+    // (rx, ry) :                 偏移映射后的 新的uv 坐标，相对于 第一象限圆角坐在圆心坐标 的相对坐标
+    float rx = abs(uv.x) - (0.5 - ellipseXRadius);
+    float ry = abs(uv.y) - (0.5 - ellipseYRadius);
+
+    // 区分 以第一象限圆角所在圆心坐标为原点的坐标的四个象限
+    //
+    // 第一象限 mx = 1, my = 1
+    // 第二象限 mx = 0, my = 1
+    // 第三象限 mx = 0, my = 0
+    // 第四象限 mx = 1, my = 0
+    // 
+    // 当 mx * my 时，只要等于1，那就是标识第一象限（实际对应圆角区域所在矩形），否则就是第二、三、四象限
+    float mx = step(0.5 - ellipseXRadius, abs(uv.x));
+    float my = step(0.5 - ellipseYRadius, abs(uv.y));
+
+    // 判断点(rx, ry)是否在椭圆外部（应用椭圆公式）
+    float isOutOfEllipse = step(1.0, pow(rx, 2.0) / pow(xRadius, 2.0) + pow(ry, 2.0) / pow(yRadius, 2.0));
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // 抗锯齿
+    // 1. 先计算当前点到椭圆中心的角度
+    float angleInRadian = atan(ry / rx);
+
+    // 2. 计算这个角度下，对于对应圆角（椭圆）上的点 
+    vec2 pointInEllipse = vec2(xRadius * cos(angleInRadian), yRadius * sin(angleInRadian));
+
+    // 3. 计算这个角度下，比当前圆角大一点椭圆上的点
+    vec2 pointInBigEllipse = vec2((xRadius * 1.01) * cos(angleInRadian), (yRadius * 1.01)* sin(angleInRadian));
+
+    // 4. 计算最远点到当前椭圆的距离
+    float maxDis = distance(pointInBigEllipse, pointInEllipse);
+
+    // 5. 计算当前点到当前椭圆的距离
+    float curDis = distance(vec2(rx, ry), pointInEllipse);
+
+    // 6. 生成插值
+    float smo = smoothstep(0.0, maxDis, curDis);
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    // mx * my = 0 时，代表非椭圆角区域，alpha 值为1，代表完全采用原始纹理的透明度
+    // mx * my = 1 时，代表椭圆角所在矩形区域
+    //  isOutOfEllipse: 
+    //    当点在椭圆外部时，此值为1，导致 alpha 最终值为0.0，即表示不显示椭圆外部的像素
+    //    当点在椭圆内部时，此值为0，导致 alpha 最终值为1.0，即表示显示椭圆内部的像素
+    //  smo : 抗锯齿实现
+    // float alpha = 1.0 - mx * my * isOutOfEllipse;
+    float alpha = 1.0 - mx * my * isOutOfEllipse * smo;
+
+    o = vec4(o.rgb, o.a * alpha);
+
+    #endif
+    gl_FragColor = o;
+  }
+}%
