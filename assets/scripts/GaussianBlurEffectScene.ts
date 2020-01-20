@@ -8,6 +8,8 @@ export default class GaussianBlurEffectScene extends cc.Component {
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
+        cc.dynamicAtlasManager.enabled = false;
+        
         this._grayLevelSlider = cc.find("Canvas/Content/Controller/GrayLevelSlider/Slider").getComponent(cc.Slider);
         this._grayLevelSliderLabel = cc.find("Canvas/Content/Controller/GrayLevelSlider/ValueLabel").getComponent(cc.Label);
 

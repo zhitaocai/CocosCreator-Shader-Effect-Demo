@@ -14,13 +14,17 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-        # # 灰化程度
-        # grayLevel: {
-        #   value: 1.0,
+        # # 标准方差值
+        # stDev: {
+        #   value: 0.84089642,
         #   inspector: {
-        #     tooltip: "灰化程度",
-        #     range: [0.0, 1.0]
+        #     tooltip: "标准方差值"
         #   }
+        # }
+
+        # # 纹理尺寸
+        # textureSize: { 
+        #   value: []
         # }
 }%
 
@@ -78,16 +82,20 @@ CCProgram fs %{
   #define e 2.718281828459045
 
   // 定义标准方差值
-  #define stdDev 0.84089642
-  // #define stdDev 1.5
+  #define stDev 0.84089642
+  // #define stDev 10.0
 
   // 定义π
   #define pi 3.141592653589793
 
-  // // 接收外部变量
-  // uniform GaussianBlur {
-  // }
- 
+  // 接收外部变量
+  uniform GaussianBlur {
+    // // 纹理尺寸（宽 x 高）（px）
+    // vec2 size;
+
+    // // 标准方差值
+    // float stDev;
+  }
 
   /**
    * 获取权重(对应二维高斯函数公式)
@@ -96,7 +104,7 @@ CCProgram fs %{
    * @param y
    */
   float getWeight(float x, float y) {
-    return (1.0 / (2.0 * pi * pow(stdDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stdDev, 2.0)));
+    return (1.0 / (2.0 * pi * pow(stDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stDev, 2.0)));
   }
 
   /**
@@ -124,19 +132,26 @@ CCProgram fs %{
 
     gl_FragColor = o;
     #if ENABLE_GAUSSIAN_BLUR
-      const float size = ceil(stdDev * 6.0);
-      float divider = 0.01; 
+
+      // 先计算所有权重的和
+      const float size = ceil(stDev * 6.0);
+      const float halfSize = floor(size / 2.0);
       float totalWeight = 0.0; 
-      for(float x = -floor(size / 2.0); x<= floor(size/ 2.0); x++) {
-        for (float y = -floor(size / 2.0); y<= floor(size/ 2.0); y++) {
+      for(float x = -halfSize; x<= halfSize; x++) {
+        for (float y = -halfSize; y<= halfSize; y++) {
           totalWeight += getWeight(x, y);
         }
       }
 
+      // 加权平均值
       vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
-      for(float x = -floor(size / 2.0); x<= floor(size/ 2.0); x++) {
-        for (float y = -floor(size / 2.0); y<= floor(size/ 2.0); y++) {
+      float divider = 0.01; 
+      for(float x = -halfSize; x<= halfSize; x++) {
+        for (float y = -halfSize; y<= halfSize; y++) {
+          // 求出对应坐标的真正权重（对应权重矩阵）
           float weight = getAverageWeight(x, y, totalWeight);
+
+          // 求出对应坐标像素颜色值的加权值
           finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;
         }
       }
