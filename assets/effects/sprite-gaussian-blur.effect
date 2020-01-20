@@ -79,6 +79,7 @@ CCProgram fs %{
 
   // 定义标准方差值
   #define stdDev 0.84089642
+  // #define stdDev 1.5
 
   // 定义π
   #define pi 3.141592653589793
@@ -86,12 +87,25 @@ CCProgram fs %{
   // // 接收外部变量
   // uniform GaussianBlur {
   // }
+ 
 
-  float getGaussianBlur()
+  /**
+   * 获取权重(对应二维高斯函数公式)
+   * 
+   * @param x   
+   * @param y
+   */
+  float getWeight(float x, float y) {
+    return (1.0 / (2.0 * pi * pow(stdDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stdDev, 2.0)));
+  }
 
+  /**
+   * 获取权重的加权平均值
+   */
+  float getAverageWeight(float x, float y, float totalWeight) {
+    return getWeight(x, y) / totalWeight;
+  }
 
-  // float matrix[4]; 
-  // float matrix[0] = 0.0;
   #endif
 
   void main () {
@@ -108,8 +122,25 @@ CCProgram fs %{
 
     ALPHA_TEST(o);
 
-    #if ENABLE_GAUSSIAN_BLUR
-    #endif
     gl_FragColor = o;
+    #if ENABLE_GAUSSIAN_BLUR
+      const float size = ceil(stdDev * 6.0);
+      float divider = 0.01; 
+      float totalWeight = 0.0; 
+      for(float x = -floor(size / 2.0); x<= floor(size/ 2.0); x++) {
+        for (float y = -floor(size / 2.0); y<= floor(size/ 2.0); y++) {
+          totalWeight += getWeight(x, y);
+        }
+      }
+
+      vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
+      for(float x = -floor(size / 2.0); x<= floor(size/ 2.0); x++) {
+        for (float y = -floor(size / 2.0); y<= floor(size/ 2.0); y++) {
+          float weight = getAverageWeight(x, y, totalWeight);
+          finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;
+        }
+      }
+      gl_FragColor = finalColor;
+    #endif
   }
 }%
