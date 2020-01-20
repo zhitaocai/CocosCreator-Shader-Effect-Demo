@@ -10,7 +10,5 @@
     "USE_TEXTURE": true,
     "ENABLE_ROUNDCORNER": true
   },
-  "_props": {
-    "roundCornerRadius": 0.1
-  }
+  "_props": {}
 }
