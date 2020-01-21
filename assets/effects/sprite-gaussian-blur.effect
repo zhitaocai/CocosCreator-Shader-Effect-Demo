@@ -104,9 +104,6 @@ CCProgram fs %{
 
   /**
    * 获取权重(对应二维高斯函数公式)
-   * 
-   * @param x   
-   * @param y
    */
   float getWeight(float x, float y) {
     return (1.0 / (2.0 * pi * pow(stDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stDev, 2.0)));
@@ -138,17 +135,40 @@ CCProgram fs %{
     gl_FragColor = o;
     #if ENABLE_GAUSSIAN_BLUR
 
-      // 先计算所有权重的和
-      const float size = ceil(stDev * 6.0);
+      const float size = floor(stDev * 6.0 + 1.0);
       const float halfSize = floor(size / 2.0);
-      float totalWeight = 0.0; 
-      for(float x = -halfSize; x<= halfSize; x++) {
-        for (float y = -halfSize; y<= halfSize; y++) {
-          totalWeight += getWeight(x, y);
-        }
-      } 
 
-      // 加权平均值
+      // 步骤一：计算所有权重的和
+
+      // // v1：遍历所有点，每个点都计算权重
+      // float totalWeight = 0.0; 
+      // for(float x = -halfSize; x<= halfSize; x++) {
+      //   for (float y = -halfSize; y<= halfSize; y++) {
+      //     totalWeight += getWeight(x, y);
+      //   }
+      // } 
+
+      // v2：因为分布是对称的，所以只计算原点、X轴正方向、Y轴正方向、第一象限的权重即可，相比起v1版本，减少很多循环计算
+
+      // 原点
+      float totalWeight = getWeight(0.0, 0.0);
+
+      // X轴正方向上的权重 * 2.0 就是整个X轴上的权重
+      for(float x = 1.0; x <= halfSize; x++) {
+          totalWeight += getWeight(x, 0.0) * 2.0;
+      } 
+      // Y轴正方向上的权重 * 2.0 就是整个Y轴上的权重
+      for(float y = 1.0; y <= halfSize; y++) {
+          totalWeight += getWeight(0.0, y) * 2.0;
+      } 
+      // 第一象限的权重 * 4.0 就是4个象限的权重
+      for(float x = 1.0; x <= halfSize; x++) {
+        for (float y = 1.0; y<= halfSize; y++) {
+          totalWeight += getWeight(x, y) * 4.0;
+        }
+      }
+
+      // 步骤二：加权平均值
       vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
       float divider = 0.01; 
       float onePxWidth = 1.0 / textureSize.x;
