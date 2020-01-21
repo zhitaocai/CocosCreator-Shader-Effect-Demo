@@ -22,10 +22,13 @@ CCEffect %{
         #   }
         # }
 
-        # # 纹理尺寸
-        # textureSize: { 
-        #   value: []
-        # }
+        # 纹理尺寸
+        textureSize: { 
+          value: [100.0, 100.0],
+          inspector: {
+            tooltip: "纹理尺寸px（宽 x 高）"
+          }
+        }
 }%
 
 
@@ -83,6 +86,8 @@ CCProgram fs %{
 
   // 定义标准方差值
   #define stDev 0.84089642
+  // #define stDev 1.5
+  // #define stDev 5.0
   // #define stDev 10.0
 
   // 定义π
@@ -90,8 +95,8 @@ CCProgram fs %{
 
   // 接收外部变量
   uniform GaussianBlur {
-    // // 纹理尺寸（宽 x 高）（px）
-    // vec2 size;
+    // 纹理尺寸（宽 x 高）（px）
+    vec2 textureSize;
 
     // // 标准方差值
     // float stDev;
@@ -141,18 +146,21 @@ CCProgram fs %{
         for (float y = -halfSize; y<= halfSize; y++) {
           totalWeight += getWeight(x, y);
         }
-      }
+      } 
 
       // 加权平均值
       vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
       float divider = 0.01; 
+      float onePxWidth = 1.0 / textureSize.x;
+      float onePxHeight = 1.0 / textureSize.y;
       for(float x = -halfSize; x<= halfSize; x++) {
         for (float y = -halfSize; y<= halfSize; y++) {
           // 求出对应坐标的真正权重（对应权重矩阵）
           float weight = getAverageWeight(x, y, totalWeight);
 
           // 求出对应坐标像素颜色值的加权值
-          finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;
+          // finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;
+          finalColor += texture(texture, v_uv0 + vec2(onePxWidth * x, onePxHeight * y)) * weight;
         }
       }
       gl_FragColor = finalColor;

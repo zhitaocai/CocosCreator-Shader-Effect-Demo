@@ -9,7 +9,7 @@ export default class GaussianBlurEffectScene extends cc.Component {
 
     onLoad() {
         cc.dynamicAtlasManager.enabled = false;
-        
+
         this._grayLevelSlider = cc.find("Canvas/Content/Controller/GrayLevelSlider/Slider").getComponent(cc.Slider);
         this._grayLevelSliderLabel = cc.find("Canvas/Content/Controller/GrayLevelSlider/ValueLabel").getComponent(cc.Label);
 
@@ -32,9 +32,7 @@ export default class GaussianBlurEffectScene extends cc.Component {
         this._grayLevelSliderLabel.string = `${this._grayLevelSlider.progress.toFixed(2)}`;
 
         // 更新材质
-        this._updateRenderComponentMaterial({
-            grayLevel: this._grayLevelSlider.progress
-        });
+        this._updateRenderComponentMaterial({});
     }
 
     /**
@@ -44,16 +42,11 @@ export default class GaussianBlurEffectScene extends cc.Component {
      * 2. 给材质的 unitform 变量赋值
      * 3. 重新将材质赋值回去
      */
-    private _updateRenderComponentMaterial(param: {
-        /**
-         * 灰化程度 [0.0, 1.0] ，1.0 表示完全灰化
-         */
-        grayLevel: number;
-    }) {
+    private _updateRenderComponentMaterial(param: {}) {
         this._examplesParentNode.children.forEach(childNode => {
             childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("grayLevel", param.grayLevel);
+                material.setProperty("textureSize", cc.v2(childNode.width, childNode.height));
                 renderComponent.setMaterial(0, material);
             });
         });
