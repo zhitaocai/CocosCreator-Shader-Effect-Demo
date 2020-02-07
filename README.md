@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.6.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.7.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -20,6 +20,7 @@
 * [Cocos Creator Shader Effect 系列 - 5 - 马赛克/像素化特效](https://www.jianshu.com/p/40e72ab76afd)
 * [Cocos Creator Shader Effect 系列 - 6 - 内发光特效](https://www.jianshu.com/p/326b73f86ecc)
 * [Cocos Creator Shader Effect 系列 - 7 - 点光/扫光特效](https://www.jianshu.com/p/8ff03b34b0bd)
+* [Cocos Creator Shader Effect 系列 - 8 - 高斯模糊](https://www.jianshu.com/p/9e42cbb1d4a8)
 
 
 * 编写中...
@@ -75,6 +76,9 @@
 
 ![](static/effects/2d-sprite-round-corner-crop-v2.gif)
 
+### 高斯模糊-V1（[实现原理](https://www.jianshu.com/p/9e42cbb1d4a8)）2020.02.07更新）
+
+![](static/effects/2d-sprite-gaussian-blur-v1.png)
 
 ### 外发光（完善中...）
 
