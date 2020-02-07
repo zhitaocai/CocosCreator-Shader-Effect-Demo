@@ -1,27 +1,27 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class GaussianBlurEffectScene extends cc.Component {
-    private _grayLevelSlider: cc.Slider = null;
-    private _grayLevelSliderLabel: cc.Label = null;
+export default class GaussianBlurV1EffectScene extends cc.Component {
+    private _blurSlider: cc.Slider = null;
+    private _blurSliderLabel: cc.Label = null;
 
     private _examplesParentNode: cc.Node = null;
 
     onLoad() {
         cc.dynamicAtlasManager.enabled = false;
 
-        this._grayLevelSlider = cc.find("Canvas/Content/Controller/GrayLevelSlider/Slider").getComponent(cc.Slider);
-        this._grayLevelSliderLabel = cc.find("Canvas/Content/Controller/GrayLevelSlider/ValueLabel").getComponent(cc.Label);
+        this._blurSlider = cc.find("Canvas/Content/Controller/BlurSlider/Slider").getComponent(cc.Slider);
+        this._blurSliderLabel = cc.find("Canvas/Content/Controller/BlurSlider/ValueLabel").getComponent(cc.Label);
 
         this._examplesParentNode = cc.find("Canvas/Content/Examples");
     }
 
     onEnable() {
-        this._grayLevelSlider.node.on("slide", this._onSliderChanged, this);
+        this._blurSlider.node.on("slide", this._onSliderChanged, this);
     }
 
     onDisable() {
-        this._grayLevelSlider.node.off("slide", this._onSliderChanged, this);
+        this._blurSlider.node.off("slide", this._onSliderChanged, this);
     }
 
     start() {
@@ -29,7 +29,7 @@ export default class GaussianBlurEffectScene extends cc.Component {
     }
 
     private _onSliderChanged() {
-        this._grayLevelSliderLabel.string = `${this._grayLevelSlider.progress.toFixed(2)}`;
+        this._blurSliderLabel.string = `${this._blurSlider.progress.toFixed(2)}`;
 
         // 更新材质
         this._updateRenderComponentMaterial({});

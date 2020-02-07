@@ -1,5 +1,10 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
 // 高斯模糊
+//
+// 参考资料（必读）
+// * http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html
+// * https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A
+
 
 CCEffect %{
   techniques:
@@ -84,9 +89,9 @@ CCProgram fs %{
   // 定义无理数
   #define e 2.718281828459045
 
-  // 定义标准方差值
-  #define stDev 0.84089642
-  // #define stDev 1.5
+  // 定义标准方差值（方差值越大，越模糊，但是需要计算的高斯矩阵范围会变大，从而带来巨大的计算量）
+  // #define stDev 0.84089642
+  #define stDev 1.5
   // #define stDev 5.0
   // #define stDev 10.0
 
@@ -103,17 +108,10 @@ CCProgram fs %{
   }
 
   /**
-   * 获取权重(对应二维高斯函数公式)
+   * 获取权重(对应二维高斯函数公式，见 https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A )
    */
   float getWeight(float x, float y) {
     return (1.0 / (2.0 * pi * pow(stDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stDev, 2.0)));
-  }
-
-  /**
-   * 获取权重的加权平均值
-   */
-  float getAverageWeight(float x, float y, float totalWeight) {
-    return getWeight(x, y) / totalWeight;
   }
 
   #endif
@@ -135,6 +133,7 @@ CCProgram fs %{
     gl_FragColor = o;
     #if ENABLE_GAUSSIAN_BLUR
 
+      // 根据高斯分布（也叫正态分布），在3个标准差范围内的分布比例占到99%的权重，因此我们只需要计算矩阵范围 [6 * stDev + 1, 6 * stDev +1] 上的权重
       const float size = floor(stDev * 6.0 + 1.0);
       const float halfSize = floor(size / 2.0);
 
@@ -148,7 +147,7 @@ CCProgram fs %{
       //   }
       // } 
 
-      // v2：因为分布是对称的，所以只计算原点、X轴正方向、Y轴正方向、第一象限的权重即可，相比起v1版本，减少很多循环计算
+      // v2：因为高斯分布是对称的，所以只计算原点、X轴正方向 * 2 、Y轴正方向 * 2 、第一象限的权重 * 4即可求出所有权重之和，相比起v1版本，减少很多循环计算
 
       // 原点
       float totalWeight = getWeight(0.0, 0.0);
@@ -168,15 +167,23 @@ CCProgram fs %{
         }
       }
 
-      // 步骤二：加权平均值
+      // TODO:
+      //
+      // 因为权重矩阵是一次性计算即可不断应用，因此可以将权重矩阵的计算放到CPU计算，并传入到Shader直接渲染，因此有以下优化方案
+      //
+      // v3：原始权重矩阵在CPU计算并传入到Shader
+      // v4：加权平均后的权重矩阵在CPU计算并传入Shader
+
+
+      // 步骤二：采样周边像素并应用加权平均值，得出最终像素值
       vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
-      float divider = 0.01; 
+      // float divider = 0.01; 
       float onePxWidth = 1.0 / textureSize.x;
       float onePxHeight = 1.0 / textureSize.y;
       for(float x = -halfSize; x<= halfSize; x++) {
         for (float y = -halfSize; y<= halfSize; y++) {
           // 求出对应坐标的真正权重（对应权重矩阵）
-          float weight = getAverageWeight(x, y, totalWeight);
+          float weight = getWeight(x, y) / totalWeight;
 
           // 求出对应坐标像素颜色值的加权值
           // finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;

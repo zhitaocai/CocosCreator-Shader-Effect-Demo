@@ -171,7 +171,7 @@
       "array": [
         0,
         0,
-        351.60631393648214,
+        491.9024293495612,
         0,
         0,
         0,
@@ -459,7 +459,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 576,
-      "height": 60
+      "height": -36
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -497,7 +497,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "GrayLevelSlider",
+    "_name": "BlurSlider",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -513,7 +513,7 @@
         "__id__": 23
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 26
@@ -646,8 +646,8 @@
       }
     ],
     "_useOriginalSize": false,
-    "_string": "灰化程度：",
-    "_N$string": "灰化程度：",
+    "_string": "模糊程度：",
+    "_N$string": "模糊程度：",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -1294,7 +1294,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 576,
-      "height": 60
+      "height": -36
     },
     "_resize": 1,
     "_N$layoutType": 2,
