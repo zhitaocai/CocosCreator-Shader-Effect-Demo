@@ -137,7 +137,7 @@ CCProgram fs %{
       const float size = floor(stDev * 6.0 + 1.0);
       const float halfSize = floor(size / 2.0);
 
-      // 步骤一：计算所有权重的和
+      // 步骤一：计算高斯矩阵上所有权重的和
 
       // // v1：遍历所有点，每个点都计算权重
       // float totalWeight = 0.0; 
