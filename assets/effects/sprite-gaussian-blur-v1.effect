@@ -1,0 +1,196 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+// 高斯模糊
+//
+// 参考资料（必读）
+// * http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html
+// * https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A
+
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+        # # 标准方差值
+        # stDev: {
+        #   value: 0.84089642,
+        #   inspector: {
+        #     tooltip: "标准方差值"
+        #   }
+        # }
+
+        # 纹理尺寸
+        textureSize: { 
+          value: [100.0, 100.0],
+          inspector: {
+            tooltip: "纹理尺寸px（宽 x 高）"
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if ENABLE_GAUSSIAN_BLUR
+
+  // 定义无理数
+  #define e 2.718281828459045
+
+  // 定义标准方差值（方差值越大，越模糊，但是需要计算的高斯矩阵范围会变大，从而带来巨大的计算量）
+  // #define stDev 0.84089642
+  #define stDev 1.5
+  // #define stDev 5.0
+  // #define stDev 10.0
+
+  // 定义π
+  #define pi 3.141592653589793
+
+  // 接收外部变量
+  uniform GaussianBlur {
+    // 纹理尺寸（宽 x 高）（px）
+    vec2 textureSize;
+
+    // // 标准方差值
+    // float stDev;
+  }
+
+  /**
+   * 获取权重(对应二维高斯函数公式，见 https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A )
+   */
+  float getWeight(float x, float y) {
+    return (1.0 / (2.0 * pi * pow(stDev, 2.0))) * pow(1.0 / e, (pow(x, 2.0) + pow(y, 2.0)) / (2.0 * pow(stDev, 2.0)));
+  }
+
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+    #if ENABLE_GAUSSIAN_BLUR
+
+      // 根据高斯分布（也叫正态分布），在3个标准差范围内的分布比例占到99%的权重，因此我们只需要计算矩阵范围 [6 * stDev + 1, 6 * stDev +1] 上的权重
+      const float size = floor(stDev * 6.0 + 1.0);
+      const float halfSize = floor(size / 2.0);
+
+      // 步骤一：计算所有权重的和
+
+      // // v1：遍历所有点，每个点都计算权重
+      // float totalWeight = 0.0; 
+      // for(float x = -halfSize; x<= halfSize; x++) {
+      //   for (float y = -halfSize; y<= halfSize; y++) {
+      //     totalWeight += getWeight(x, y);
+      //   }
+      // } 
+
+      // v2：因为高斯分布是对称的，所以只计算原点、X轴正方向 * 2 、Y轴正方向 * 2 、第一象限的权重 * 4即可求出所有权重之和，相比起v1版本，减少很多循环计算
+
+      // 原点
+      float totalWeight = getWeight(0.0, 0.0);
+
+      // X轴正方向上的权重 * 2.0 就是整个X轴上的权重
+      for(float x = 1.0; x <= halfSize; x++) {
+          totalWeight += getWeight(x, 0.0) * 2.0;
+      } 
+      // Y轴正方向上的权重 * 2.0 就是整个Y轴上的权重
+      for(float y = 1.0; y <= halfSize; y++) {
+          totalWeight += getWeight(0.0, y) * 2.0;
+      } 
+      // 第一象限的权重 * 4.0 就是4个象限的权重
+      for(float x = 1.0; x <= halfSize; x++) {
+        for (float y = 1.0; y<= halfSize; y++) {
+          totalWeight += getWeight(x, y) * 4.0;
+        }
+      }
+
+      // TODO:
+      //
+      // 因为权重矩阵是一次性计算即可不断应用，因此可以将权重矩阵的计算放到CPU计算，并传入到Shader直接渲染，因此有以下优化方案
+      //
+      // v3：原始权重矩阵在CPU计算并传入到Shader
+      // v4：加权平均后的权重矩阵在CPU计算并传入Shader
+
+
+      // 步骤二：采样周边像素并应用加权平均值，得出最终像素值
+      vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
+      // float divider = 0.01; 
+      float onePxWidth = 1.0 / textureSize.x;
+      float onePxHeight = 1.0 / textureSize.y;
+      for(float x = -halfSize; x<= halfSize; x++) {
+        for (float y = -halfSize; y<= halfSize; y++) {
+          // 求出对应坐标的真正权重（对应权重矩阵）
+          float weight = getWeight(x, y) / totalWeight;
+
+          // 求出对应坐标像素颜色值的加权值
+          // finalColor += texture(texture, v_uv0 + vec2(divider * x, divider * y)) * weight;
+          finalColor += texture(texture, v_uv0 + vec2(onePxWidth * x, onePxHeight * y)) * weight;
+        }
+      }
+      gl_FragColor = finalColor;
+    #endif
+  }
+}%
