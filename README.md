@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.6.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.7.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
@@ -75,6 +75,9 @@
 
 ![](static/effects/2d-sprite-round-corner-crop-v2.gif)
 
+### 高斯模糊-V1（2020.02.07更新）
+
+![](static/effects/2d-sprite-gaussian-blur-v1.png)
 
 ### 外发光（完善中...）
 
