@@ -21,9 +21,8 @@ CCEffect %{
         # 圆角半径
         radius: {
           value: 0.4,
-          inspector: {
-            tooltip: "圆角半径",
-            range: [0.0, 0.5]
+          editor: {
+            tooltip: "圆角半径"
           }
         }
 }%
@@ -80,7 +79,7 @@ CCProgram fs %{
   uniform RoundCorner {
     // 圆角半径
     float radius;
-  }
+  };
   #endif
 
   void main () {

@@ -1,14 +1,18 @@
 {
   "__type__": "cc.Material",
-  "_name": "",
+  "_name": "sprite-gray",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
     "__uuid__": "2e5b29d9-dd5e-4f3d-92e9-e580745b3bc8"
   },
-  "_defines": {
-    "USE_TEXTURE": true,
-    "USE_GRAY": true
-  },
-  "_props": {}
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true,
+        "USE_GRAY": true
+      }
+    }
+  }
 }

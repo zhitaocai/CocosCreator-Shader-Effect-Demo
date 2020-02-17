@@ -1,13 +1,16 @@
 {
   "__type__": "cc.Material",
-  "_name": "",
+  "_name": "builtin-2d-sprite-explain",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
     "__uuid__": "8f277982-dc0a-4030-90cc-b336a928a372"
   },
-  "_defines": {
-    "USE_TEXTURE": true
-  },
-  "_props": {}
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 描边特效
+
 CCEffect %{
   techniques:
   - passes:
@@ -17,7 +17,7 @@ CCEffect %{
         # 描边颜色
         outlineColor: { 
           value: [1.0, 0.0, 0.0, 1.0], 
-          inspector: {
+          editor: {
             type: color,
             tooltip: "描边颜色",
           }
@@ -26,11 +26,12 @@ CCEffect %{
         # 描边宽度
         outlineWidth: { 
           value: 0.002,
-          inspector: {
+          editor: {
             tooltip: "描边宽度",
             range: [0.0, 1.0]
           }
         }
+        
 }%
 
 
@@ -109,7 +110,6 @@ CCProgram fs %{
   }
 
   #endif
-
   void main () {
     vec4 o = vec4(1, 1, 1, 1);
 
