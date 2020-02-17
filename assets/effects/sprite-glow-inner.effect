@@ -1,6 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 内发光特效
-// 原理: 采样周边像素alpha取平均值，叠加发光效果
+
 CCEffect %{
   techniques:
   - passes:
@@ -14,7 +13,6 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-
         # 自定义参数
         # 发光颜色
         glowColor: { 
@@ -207,7 +205,7 @@ CCProgram fs %{
     vec4 o = vec4(1, 1, 1, 1);
 
     #if USE_TEXTURE
-    o *= getTextureColor(texture, v_uv0);
+    o *= texture(texture, v_uv0);
       #if CC_USE_ALPHA_ATLAS_TEXTURE
       o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
       #endif

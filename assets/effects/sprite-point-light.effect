@@ -43,6 +43,22 @@ CCEffect %{
             tooltip: "扩散半径"
           }
         }
+
+        # 裁剪掉透明区域上的光
+        cropAlpha: {
+          value: 1.0,
+          editor: {
+            tooltip: "是否裁剪透明区域上的光。0：不启用，非0：启用"
+          }
+        }
+
+        # 是否启用迷雾效果
+        enableFog: {
+          value: 0.0,
+          editor: {
+            tooltip: "是否启用迷雾效果。0：不启用，非0：启用"
+          }
+        }
 }%
 
 
@@ -104,13 +120,13 @@ CCProgram fs %{
     // 扩展半径
     float radius;
 
-    // 裁剪掉透明区域上的点光
-    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
-    bool cropAlpha;   
+    // 裁剪掉透明区域上的光
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float cropAlpha;   
 
     // 是否启用迷雾效果
-    // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
-    bool enableFog;
+    // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
+    float enableFog;
   };
 
   /**
@@ -123,12 +139,12 @@ CCProgram fs %{
     float a = 1.0 ;
 
     // 裁剪掉透明区域上的点光
-    if (cropAlpha) {
+    if (bool(cropAlpha)) {
       a *= step(0.01, textureColor.a);
     }
 
-    // 裁剪掉圆范围外的uv（迷雾效果）
-    if (!enableFog) {
+    // 裁剪掉光束范围外的uv（迷雾效果）
+    if (!bool(enableFog)) {
       a *= step(dis, radius);
     }
 
