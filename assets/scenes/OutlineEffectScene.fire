@@ -82,6 +82,9 @@
       },
       {
         "__id__": 46
+      },
+      {
+        "__id__": 47
       }
     ],
     "_prefab": null,
@@ -171,7 +174,7 @@
       "array": [
         0,
         0,
-        492.17758360225525,
+        324.7595264191645,
         0,
         0,
         0,
@@ -655,6 +658,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 2,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -1222,6 +1227,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -1364,7 +1371,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 583.73
+      "height": 590.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1472,7 +1479,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_srcBlendFactor": 770,
@@ -1566,7 +1573,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_srcBlendFactor": 770,
@@ -1660,7 +1667,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_srcBlendFactor": 770,
@@ -1754,7 +1761,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_srcBlendFactor": 770,
@@ -1848,7 +1855,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_useOriginalSize": false,
@@ -1861,6 +1868,8 @@
     "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -1894,7 +1903,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 167.5,
-      "height": 33.33
+      "height": 40
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1906,7 +1915,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -567.065,
+        -570.4000000000001,
         0,
         0,
         0,
@@ -1940,7 +1949,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "daf44951-2c80-4778-b99f-52cfc78ab053"
+        "__uuid__": "df1eb418-ec89-4e04-a579-03fcfbc315fc"
       }
     ],
     "_useOriginalSize": false,
@@ -1955,6 +1964,8 @@
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -2000,7 +2011,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 583.73
+      "height": 590.4
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -2058,5 +2069,32 @@
     },
     "_enabled": true,
     "_id": "580AzT6xFJvb7ohciGgehV"
+  },
+  {
+    "__type__": "cc.Widget",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 2
+    },
+    "_enabled": true,
+    "alignMode": 1,
+    "_target": null,
+    "_alignFlags": 45,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_verticalCenter": 0,
+    "_horizontalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": true,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 0,
+    "_originalHeight": 0,
+    "_id": "f7GTkBg4hJMpPgwjS3Vbiz"
   }
 ]

@@ -1,6 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 外发光特效
-// 原理：采样周边像素alpha取平均值，给外部加发光效果(1-col.a可避免内部发光)
+
 CCEffect %{
   techniques:
   - passes:
@@ -14,12 +13,11 @@ CCEffect %{
       properties:
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
-
         # 自定义参数
         # 发光颜色
         glowColor: { 
           value: [1.0, 1.0, 0.0, 1.0], 
-          inspector: { 
+          editor: { 
             type: color,
             tooltip: "发光颜色"
           } 
@@ -27,7 +25,7 @@ CCEffect %{
         # 发光宽度
         glowColorSize: { 
           value: 0.15,
-          inspector: {
+          editor: {
             tooltip: "发光宽度",
             range: [0.0, 1.0],
           }
@@ -36,7 +34,7 @@ CCEffect %{
         #   只有小于等于这个透明度的点才会发光
         glowThreshold: {
           value: 1.0,
-          inspector: {
+          editor: {
             tooltip: "发光阈值",
             range: [0.0, 1.0]
           }
@@ -50,20 +48,17 @@ CCProgram vs %{
   #include <cc-global>
   #include <cc-local>
 
-  // a_position 是笛卡尔坐标右手系，也是OpenGL的坐标系，原点在左下角，X轴正方向往右，Y轴正方向往上，Z轴正方向往外
   in vec3 a_position;
   in vec4 a_color;
   out vec4 v_color;
 
   #if USE_TEXTURE
-  // a_uv0 是标准屏幕坐标系，即原点在左上角，X轴正方向往右，Y轴正方向往下
   in vec2 a_uv0;
   out vec2 v_uv0;
   #endif
 
   void main () {
     vec4 pos = vec4(a_position, 1);
-    // vec4 pos = vec4(a_position * vec3(1.0, 1.0, 1.0), 1);
 
     #if CC_USE_MODEL
     pos = cc_matViewProj * cc_matWorld * pos;
@@ -239,7 +234,7 @@ CCProgram fs %{
     vec4 o = vec4(1, 1, 1, 1);
 
     #if USE_TEXTURE
-    o *= getTextureColor(texture, v_uv0);
+    o *= texture(texture, v_uv0);
       #if CC_USE_ALPHA_ATLAS_TEXTURE
       o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
       #endif

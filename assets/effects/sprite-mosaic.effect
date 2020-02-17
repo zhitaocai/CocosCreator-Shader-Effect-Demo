@@ -18,14 +18,14 @@ CCEffect %{
         # X轴方块数量
         xBlockCount: {
           value: 30.0,
-          inspector: {
+          editor: {
             tooltip: "X轴方向马赛克方块数量"
           }
         }
         # Y轴方块数量
         yBlockCount: {
           value: 30.0,
-          inspector: {
+          editor: {
             tooltip: "Y轴方向马赛克方块数量"
           }
         }
@@ -85,7 +85,7 @@ CCProgram fs %{
     float xBlockCount;
     // Y轴方块数量
     float yBlockCount;
-  }
+  };
 
   /**
    * 获取v_uv0最终映射的马赛格格子的坐标

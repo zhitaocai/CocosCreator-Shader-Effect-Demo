@@ -22,7 +22,7 @@ CCEffect %{
         # 光束颜色
         lightColor: {
           value: [1.0, 1.0, 0.0, 1.0], 
-          inspector: { 
+          editor: { 
             type: color,
             tooltip: "光束颜色"
           } 
@@ -31,7 +31,7 @@ CCEffect %{
         # 光束中心点坐标
         lightCenterPoint: {
           value: [0.2, 0.2],
-          inspector: {
+          editor: {
             tooltip: "光束中心点坐标" 
           }
         }
@@ -39,7 +39,7 @@ CCEffect %{
         # 光束倾斜角度
         lightAngle: {
           value: 36.0,
-          inspctor: {
+          editor: {
             tooltip: "光束倾斜角度",
             range: [0.0, 1.0],
           } 
@@ -48,7 +48,7 @@ CCEffect %{
         # 光束宽度
         lightWidth: {
           value: 0.2,
-          inspector: {
+          editor: {
             tooltip: "光束宽度"
           }
         }
@@ -56,7 +56,7 @@ CCEffect %{
         # 启用光束渐变
         enableGradient: {
           value: 1.0,
-          inspecator: {
+          editor: {
             tooltip: "是否启用光束渐变。0：不启用，非0：启用"
           }
         }
@@ -64,7 +64,7 @@ CCEffect %{
         # 裁剪掉透明区域上的光
         cropAlpha: {
           value: 1.0,
-          inspecator: {
+          editor: {
             tooltip: "是否裁剪透明区域上的光。0：不启用，非0：启用"
           }
         }
@@ -72,7 +72,7 @@ CCEffect %{
         # 是否启用迷雾效果
         enableFog: {
           value: 0.0,
-          inspecator: {
+          editor: {
             tooltip: "是否启用迷雾效果。0：不启用，非0：启用"
           }
         }
@@ -151,7 +151,7 @@ CCProgram fs %{
     // 是否启用迷雾效果
     // ps：编辑器还不支持 bool 类型的样子，因此用float来定义
     float enableFog;
-  }
+  };
 
   /**
    * 添加光束颜色

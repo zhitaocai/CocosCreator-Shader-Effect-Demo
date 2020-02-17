@@ -1,14 +1,18 @@
 {
   "__type__": "cc.Material",
-  "_name": "",
+  "_name": "sprite-round-corner-crop-v1",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
     "__uuid__": "a4afedba-5234-44d7-9031-cba83051d521"
   },
-  "_defines": {
-    "USE_TEXTURE": true,
-    "ENABLE_ROUNDCORNER": true
-  },
-  "_props": {}
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true,
+        "ENABLE_ROUNDCORNER": true
+      }
+    }
+  }
 }
