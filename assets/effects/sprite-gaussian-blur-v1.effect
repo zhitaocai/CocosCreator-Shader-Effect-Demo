@@ -22,7 +22,7 @@ CCEffect %{
         # # 标准方差值
         # stDev: {
         #   value: 0.84089642,
-        #   inspector: {
+        #   editor: {
         #     tooltip: "标准方差值"
         #   }
         # }
@@ -30,7 +30,7 @@ CCEffect %{
         # 纹理尺寸
         textureSize: { 
           value: [100.0, 100.0],
-          inspector: {
+          editor: {
             tooltip: "纹理尺寸px（宽 x 高）"
           }
         }

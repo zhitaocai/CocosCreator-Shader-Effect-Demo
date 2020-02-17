@@ -22,7 +22,7 @@ CCEffect %{
         #  扩散颜色
         centerColor: {
           value: [1.0, 1.0, 0.0, 1.0], 
-          inspector: { 
+          editor: { 
             type: color,
             tooltip: "发光颜色"
           } 
@@ -31,7 +31,7 @@ CCEffect %{
         # 扩散起点坐标
         centerPoint: {
           value: [0.2, 0.2],
-          inspector: {
+          editor: {
             tooltip: "扩散起点坐标" 
           }
         }
@@ -39,7 +39,7 @@ CCEffect %{
         # 扩散半径
         radius: {
           value: 0.4,
-          inspector: {
+          editor: {
             tooltip: "扩散半径"
           }
         }

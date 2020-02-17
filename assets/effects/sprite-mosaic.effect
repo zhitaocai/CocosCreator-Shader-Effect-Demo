@@ -18,14 +18,14 @@ CCEffect %{
         # X轴方块数量
         xBlockCount: {
           value: 30.0,
-          inspector: {
+          editor: {
             tooltip: "X轴方向马赛克方块数量"
           }
         }
         # Y轴方块数量
         yBlockCount: {
           value: 30.0,
-          inspector: {
+          editor: {
             tooltip: "Y轴方向马赛克方块数量"
           }
         }

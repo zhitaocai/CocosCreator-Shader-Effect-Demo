@@ -21,7 +21,7 @@ CCEffect %{
         # 灰化程度
         grayLevel: {
           value: 1.0,
-          inspector: {
+          editor: {
             tooltip: "灰化程度",
             range: [0.0, 1.0]
           }
