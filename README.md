@@ -1,9 +1,10 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.8.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.9.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
+[![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.3.0-orange.svg)](http://www.cocos.com/creator)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.2-orange.svg)](http://www.cocos.com/creator)
+[![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.1-orange.svg)](http://www.cocos.com/creator)
 
 
 ## 一、项目说明
@@ -11,9 +12,9 @@
 1. 此项目为我在学习过程中的一些分享和实现，因此项目名字以 **`Demo`** 为后缀。
 2. 项目重点在于 **「渔」**，不在于 **「鱼」** 。
 3. 如果你有意将此Demo中的效果加入到你的项目中，**请认真评估是否适合你的项目使用！**
-4. 本项目支持 Cocos Creator `v2.2.1` 、 `v2.2.2`
-   1. 项目当前正在使用 v2.2.2 开发
-   2. 如果采用 Cocos Creator v2.2.1打开，在打开的时候，Cocos Creator 会提示有降级打开项目的提醒，忽略直接打开即可
+4. 本项目支持 Cocos Creator `v2.3.0` 、 `v2.2.2` 、 `v2.2.1`
+   1. 项目当前正在使用 v2.3.0 开发
+   2. 如果在低版本中打开，可能存在降级提醒，目前没测试是否可以正常打开，建议在 2.3.0中打开采用 Cocos Creator v2.2.1打开，在打开的时候，Cocos Creator 会提示有降级打开项目的提醒，忽略直接打开即可
 
 ## 二、系列文章
 

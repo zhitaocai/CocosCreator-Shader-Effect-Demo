@@ -1,5 +1,9 @@
 # ChangeLog
 
+## 0.9.0 (2020-02-17)
+
+- 支持 Cocos Creator v2.3.0
+
 ## 0.8.0 (2020-02-07)
 
 - 支持 Cocos Creator v2.2.2
