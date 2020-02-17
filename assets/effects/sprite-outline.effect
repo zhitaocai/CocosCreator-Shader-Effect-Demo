@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
-// 描边特效
+
 CCEffect %{
   techniques:
   - passes:
@@ -31,6 +31,7 @@ CCEffect %{
             range: [0.0, 1.0]
           }
         }
+        
 }%
 
 
@@ -109,7 +110,6 @@ CCProgram fs %{
   }
 
   #endif
-
   void main () {
     vec4 o = vec4(1, 1, 1, 1);
 
