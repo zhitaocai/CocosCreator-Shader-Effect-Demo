@@ -80,7 +80,7 @@ CCProgram fs %{
   uniform RoundCorner {
     // 圆角半径
     float radius;
-  }
+  };
   #endif
 
   void main () {

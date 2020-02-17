@@ -95,7 +95,7 @@ CCProgram fs %{
 
     // 圆角y轴半径长度（相对于纹理高度）
     float yRadius;
-  }
+  };
   #endif
 
   void main () {

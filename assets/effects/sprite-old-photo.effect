@@ -80,7 +80,7 @@ CCProgram fs %{
   uniform OldPhoto {
     // 老化程度
     float oldLevel;
-  }
+  };
 
   /**
    * 获取老化颜色

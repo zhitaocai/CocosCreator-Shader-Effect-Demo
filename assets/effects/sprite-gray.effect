@@ -80,7 +80,7 @@ CCProgram fs %{
   uniform GrayPhoto {
     // 灰化程度
     float grayLevel;
-  }
+  };
   #endif
 
   void main () {

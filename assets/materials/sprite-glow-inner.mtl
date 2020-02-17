@@ -1,26 +1,30 @@
 {
   "__type__": "cc.Material",
-  "_name": "",
+  "_name": "sprite-glow-inner",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
     "__uuid__": "90211f16-c00e-4c37-a192-43ec50c9ea35"
   },
-  "_defines": {
-    "USE_TEXTURE": true,
-    "USE_ALPHA_TEST": false,
-    "SHOW_INNER_GLOW": true
-  },
-  "_props": {
-    "texture": null,
-    "glowColor": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 0,
-      "b": 0,
-      "a": 255
-    },
-    "glowColorSize": 0.2,
-    "glowThreshold": 0.1
+  "_techniqueData": {
+    "0": {
+      "props": {
+        "texture": null,
+        "glowColor": {
+          "__type__": "cc.Color",
+          "r": 255,
+          "g": 0,
+          "b": 0,
+          "a": 255
+        },
+        "glowColorSize": 0.2,
+        "glowThreshold": 0.1
+      },
+      "defines": {
+        "USE_TEXTURE": true,
+        "USE_ALPHA_TEST": false,
+        "SHOW_INNER_GLOW": true
+      }
+    }
   }
 }

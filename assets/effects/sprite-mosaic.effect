@@ -85,7 +85,7 @@ CCProgram fs %{
     float xBlockCount;
     // Y轴方块数量
     float yBlockCount;
-  }
+  };
 
   /**
    * 获取v_uv0最终映射的马赛格格子的坐标

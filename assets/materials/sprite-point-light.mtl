@@ -1,16 +1,20 @@
 {
   "__type__": "cc.Material",
-  "_name": "",
+  "_name": "sprite-point-light",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
     "__uuid__": "72a182fc-08a6-4faa-8e36-8bd84b4a0b53"
   },
-  "_defines": {
-    "USE_TEXTURE": true,
-    "ENABLE_DIFFUSION": true
-  },
-  "_props": {
-    "radius": 0.4
+  "_techniqueData": {
+    "0": {
+      "props": {
+        "radius": 0.4
+      },
+      "defines": {
+        "USE_TEXTURE": true,
+        "ENABLE_DIFFUSION": true
+      }
+    }
   }
 }

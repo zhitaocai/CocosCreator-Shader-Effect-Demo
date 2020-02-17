@@ -105,7 +105,7 @@ CCProgram fs %{
 
     // // 标准方差值
     // float stDev;
-  }
+  };
 
   /**
    * 获取权重(对应二维高斯函数公式，见 https://zh.wikipedia.org/wiki/%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A )

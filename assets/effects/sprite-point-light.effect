@@ -111,7 +111,7 @@ CCProgram fs %{
     // 是否启用迷雾效果
     // ps：编辑器还不支持 bool 类型的样子，因此没在 CCEffect 中定义
     bool enableFog;
-  }
+  };
 
   /**
    * 添加某个扩散点后混合后的纹理颜色
