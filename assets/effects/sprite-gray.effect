@@ -103,7 +103,14 @@ CCProgram fs %{
     float gray = 0.2126 * o.r + 0.7152 * o.g + 0.0722 * o.b;
     vec4 grayColor = vec4(gray, gray, gray, o.a);
 
-    o = srcColor + (grayColor - srcColor) * grayLevel;
+
+    // o = srcColor + (grayColor - srcColor) * grayLevel;
+    // 实际上，在OpenGL中内置了mix混合函数，实际效果就是上面这条公式
+    // mix(x, y, a)函数理解：x * (1.0 - a) + y * a
+    // 为了看起来更像OpenGL，因此这里改为采用内置函数
+
+    o = mix(srcColor, grayColor, grayLevel);
+
     #endif
     gl_FragColor = o;
   }
