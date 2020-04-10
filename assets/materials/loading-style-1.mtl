@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.Material",
+  "_name": "loading-style-1",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "aa3b729c-fb16-4293-8789-8b7f36e017f1"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true,
+        "USE_LOADING_STYLE": true,
+        "USE_ANTI_ALIAS": true
+      },
+      "props": {
+        "u_arc_color": {
+          "__type__": "cc.Color",
+          "r": 255,
+          "g": 255,
+          "b": 255,
+          "a": 255
+        }
+      }
+    }
+  }
+}

@@ -115,7 +115,8 @@ CCProgram fs %{
     vec4 srcColor = o;
     vec4 oldColor = getOldPhotoColor(srcColor);
 
-    o = srcColor + (oldColor - srcColor) * oldLevel;
+    // o = srcColor + (oldColor - srcColor) * oldLevel;
+    o = mix(srcColor, oldColor, oldLevel);
     #endif
     gl_FragColor = o;
   }
