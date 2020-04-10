@@ -86,7 +86,7 @@
 
 ### 纯 Shader Effect 实现的 Loading 动画（2020.04.10更新）
 
-![](static/effects/2d-2d-loading-style-1.gif)
+![](static/effects/2d-loading-style-1.gif)
 
 ps: 
 
