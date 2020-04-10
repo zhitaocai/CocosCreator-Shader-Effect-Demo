@@ -1,6 +1,6 @@
 # Cocos Creator Shader Effect Demo
 
-[![](https://img.shields.io/badge/Release-0.9.0-green.svg)](CHANGELOG.md)
+[![](https://img.shields.io/badge/Release-0.10.0-green.svg)](CHANGELOG.md)
 [![](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.3.0-orange.svg)](http://www.cocos.com/creator)
 [![](https://img.shields.io/badge/Support-Cocos%20Creator%20v2.2.2-orange.svg)](http://www.cocos.com/creator)
@@ -34,8 +34,6 @@
 那么现在，我们先来轻松地看下有哪些特效效果吧~
 
 ## 三、特效预览
-
-
 
 ### 内发光（[实现原理](https://www.jianshu.com/p/326b73f86ecc)）
 
@@ -85,6 +83,16 @@
 ### 高斯模糊-V1（[实现原理](https://www.jianshu.com/p/9e42cbb1d4a8)）2020.02.07更新）
 
 ![](static/effects/2d-sprite-gaussian-blur-v1.png)
+
+### 纯 Shader Effect 实现的 Loading 动画（2020.04.10更新）
+
+![](static/effects/2d-2d-loading-style-1.gif)
+
+ps: 
+
+* 模拟器或者原生平台下可能不会生效
+  * 这是因为 effect 中用到 `cc_time` 内置参数，此内置参数已有 [反馈](https://forum.cocos.org/t/creator-v2-2-2-effect-cc-time-android/88916) 在模拟器等原生平台下不生效的问题（坐等引擎修复，或者可以自行传值进去）
+  * 此为引导性 Demo 示例，仅供学习
 
 ### 外发光（完善中...）
 

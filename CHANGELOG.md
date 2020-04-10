@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 0.10.0 (2020-04-10)
+
+- 支持 Cocos Creator v2.3.3
+- 加入纯 shader 实现的 loading 动画
+
 ## 0.9.0 (2020-02-17)
 
 - 支持 Cocos Creator v2.3.0
