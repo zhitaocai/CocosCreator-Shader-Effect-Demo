@@ -1,0 +1,258 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+        # 自定义参数
+        # 发光颜色
+        glowColor: { 
+          value: [1.0, 1.0, 0.0, 1.0], 
+          editor: { 
+            type: color,
+            tooltip: "发光颜色"
+          } 
+        } 
+        # 发光宽度
+        glowColorSize: { 
+          value: 0.2,
+          editor: {
+            tooltip: "发光宽度",
+            range: [0.0, 1.0],
+          }
+        }
+        # 发光透明度阈值
+        #   只有超过这个透明度的点才会发光
+        #   一般用于解决图像边缘存在渐变透明的时，决定超过这个透明度阈值的边缘点才点发光，具体可以操作一下
+        glowThreshold: {
+          value: 0.1,
+          editor: {
+            tooltip: "发光阈值",
+            range: [0.0, 1.0]
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if SHOW_INNER_GLOW
+
+  uniform glow {
+    // 发光颜色
+    vec4 glowColor;
+    // 发光范围
+    float glowColorSize;
+    // 发光阈值
+    float glowThreshold;
+    // 特别地，必须是 vec4 先于 float 声明
+  };
+
+  /**
+   * 获取纹理uv颜色 
+   *
+   * 主要实现：超出边界的统一返回 vec4(0.0, 0.0, 0.0, 0.0)
+   * 
+   * 在 Cocos Creator 2.2.1 的编辑器中，超出边界的uv并不是返回 vec4(0.0, 0.0, 0.0, 0.0)，实际返回为
+   * 
+   * * 超出左边界的uv，返回 v_uv0.x = 0 的颜色
+   * * 超出右边界的uv，返回 v_uv0.x = 1 的颜色
+   * * 超出上边界的uv，返回 v_uv0.y = 1 的颜色
+   * * 超出下边界的uv，返回 v_uv0.y = 0 的颜色
+   *
+   * 和实际在浏览器上显示（超出边界即为透明）的有区别，为了统一，这里适配一下，这样子，在编辑器上预览的效果就能和实际浏览器的保持一致
+   */
+  vec4 getTextureColor(sampler2D texture, vec2 v_uv0) {
+    if (v_uv0.x > 1.0 || v_uv0.x < 0.0 || v_uv0.y > 1.0 || v_uv0.y < 0.0) {
+      return vec4(0.0, 0.0, 0.0, 0.0);
+    }
+    return texture(texture, v_uv0);
+  }
+
+
+  /**
+   * 获取指定角度方向，距离为xxx的像素的透明度
+   *
+   * @param angle 角度 [0.0, 360.0]
+   * @param dist 距离 [0.0, 1.0]
+   *
+   * @return alpha [0.0, 1.0]
+   */
+  float getColorAlpha(float angle, float dist) {
+    // 角度转弧度，公式为：弧度 = 角度 * (pi / 180)
+    // float radian = angle * 0.01745329252; // 这个浮点数是 pi / 180
+    float radian = radians(angle);
+    vec4 color = getTextureColor(texture, v_uv0 + vec2(dist * cos(radian), dist * sin(radian))); 
+    return color.a;
+  }
+
+  /**
+   * 获取指定距离的周边像素的透明度平均值
+   *
+   * @param dist 距离 [0.0, 1.0]
+   *
+   * @return average alpha [0.0, 1.0]
+   */
+  float getAverageAlpha(float dist) {
+    float totalAlpha = 0.0;
+    // 以30度为一个单位，那么「周边一圈」就由0到360度中共计12个点的组成
+    totalAlpha += getColorAlpha(0.0, dist);
+    totalAlpha += getColorAlpha(30.0, dist);
+    totalAlpha += getColorAlpha(60.0, dist);
+    totalAlpha += getColorAlpha(90.0, dist);
+    totalAlpha += getColorAlpha(120.0, dist);
+    totalAlpha += getColorAlpha(150.0, dist);
+    totalAlpha += getColorAlpha(180.0, dist);
+    totalAlpha += getColorAlpha(210.0, dist);
+    totalAlpha += getColorAlpha(240.0, dist);
+    totalAlpha += getColorAlpha(270.0, dist);
+    totalAlpha += getColorAlpha(300.0, dist);
+    totalAlpha += getColorAlpha(330.0, dist);
+    return totalAlpha * 0.0833; // 1 / 12 = 0.08333
+  }
+
+  /**
+   * 获取发光的透明度
+   */
+  float getGlowAlpha() {
+    // 如果发光宽度为0，直接返回0.0透明度，减少计算量
+    if (glowColorSize == 0.0) {
+      return 0.0;
+    }
+
+    // 因为我们是要做内发光，所以如果点本来是透明的或者接近透明的
+    // 那么就意味着这个点是图像外的透明点或者图像内透明点（如空洞）之类的
+    // 内发光的话，这些透明点我们不用处理，让它保持原样，否则就是会有内描边或者一点扩边的效果
+    // 同时也是提前直接结束，减少计算量
+    vec4 srcColor = getTextureColor(texture, v_uv0);
+    if (srcColor.a <= glowThreshold) {
+      return srcColor.a;
+    } 
+
+    // 将传入的指定距离，平均分成10圈，求出每一圈的平均透明度，
+    // 然后求和取平均值，那么就可以得到该点的平均透明度
+    float totalAlpha = 0.0;
+    totalAlpha += getAverageAlpha(glowColorSize * 0.1);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.2);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.3);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.4);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.5);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.6);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.7);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.8);
+    totalAlpha += getAverageAlpha(glowColorSize * 0.9);
+    totalAlpha += getAverageAlpha(glowColorSize * 1.0);
+    return totalAlpha * 0.1;
+  }
+
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+
+    #if SHOW_INNER_GLOW
+      // 目标颜色（图像）
+      vec4 color_dest = o;
+
+      // 获取发光透明度
+      // 此时我们得到的是内部透明度为1，靠近边缘的为接近0的透明度，其他位置为0的透明度
+      float alpha = getGlowAlpha();
+
+      // 而内发光是从边缘开始的，那么什么算是边缘呢？
+      // 如果图像边缘有大量渐变，那么如果我们取大于 0.0 点就算是图像内的话，那么可能边缘会出现锯齿
+      // 因此为了确定边缘，引入了发光阈值，我们只需要比较一下发光阈值就可以，大于发光阈值的点都是（图像内）发光点
+      if (alpha > glowThreshold) {
+
+        // 内发光是从边缘发光的，是需要内部透明度为0，靠近边缘的接近1的透明度
+        // 因此我们需要翻转一下透明度
+        alpha = 1.0 - alpha;
+
+        // 给点调料，让靠近边缘的更加亮
+        alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+      }
+      // 源颜色（内发光）
+      vec4 color_src = glowColor * alpha;
+
+      // 按照这个顺序，源颜色就是内发光颜色，目标颜色就是图案颜色色 
+      // 所以命名就是 color_src, color_dest
+
+      // 按照混合颜色规则 http://docs.cocos.com/creator/manual/zh/advanced-topics/ui-auto-batch.html#blend-%E6%A8%A1%E5%BC%8F
+      // 要在图案上方，叠加一个内发光，将两者颜色混合起来，那么最终选择的混合模式如下：
+      //
+      // （内发光）color_src: GL_SRC_ALPHA
+      // （原图像）color_dest: GL_ONE
+      // 
+      // 即最终颜色如下：
+      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE
+
+      gl_FragColor = color_src * color_src.a + color_dest;
+    #endif
+  }
+}%

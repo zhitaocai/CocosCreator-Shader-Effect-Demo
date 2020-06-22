@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        324.7595264191645,
+        399.23771114462625,
         0,
         0,
         0,
@@ -5145,7 +5145,6 @@
     },
     "_resize": 1,
     "_N$layoutType": 2,
-    "_N$padding": 0,
     "_N$cellSize": {
       "__type__": "cc.Size",
       "width": 40,
@@ -5310,7 +5309,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "647e873f-e0ed-4ce7-84cb-9e4d4f8a211f"
+        "__uuid__": "ed801db5-01ea-4505-b505-e661a3f1bb07"
       }
     ],
     "_srcBlendFactor": 770,
@@ -5404,7 +5403,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "647e873f-e0ed-4ce7-84cb-9e4d4f8a211f"
+        "__uuid__": "ed801db5-01ea-4505-b505-e661a3f1bb07"
       }
     ],
     "_srcBlendFactor": 770,
@@ -5498,7 +5497,7 @@
     "_enabled": true,
     "_materials": [
       {
-        "__uuid__": "647e873f-e0ed-4ce7-84cb-9e4d4f8a211f"
+        "__uuid__": "ed801db5-01ea-4505-b505-e661a3f1bb07"
       }
     ],
     "_useOriginalSize": false,
@@ -5564,7 +5563,6 @@
     },
     "_resize": 1,
     "_N$layoutType": 2,
-    "_N$padding": 0,
     "_N$cellSize": {
       "__type__": "cc.Size",
       "width": 40,
