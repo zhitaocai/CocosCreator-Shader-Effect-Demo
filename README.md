@@ -37,6 +37,8 @@
 
 ### 内发光（[实现原理](https://www.jianshu.com/p/326b73f86ecc)）
 
+*ps:此效果有两个版本实现，见对应effect源码，前几行内有版本差异说明*
+
 ![](static/effects/2d-sprite-glow-inner.gif)
 
 ### 马赛克/像素化（[实现原理](https://www.jianshu.com/p/40e72ab76afd)）
