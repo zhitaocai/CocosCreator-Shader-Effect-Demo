@@ -17,10 +17,11 @@
         "glowColor": {
           "__type__": "cc.Color",
           "r": 255,
-          "g": 0,
+          "g": 255,
           "b": 0,
           "a": 255
-        }
+        },
+        "glowRange": 60
       }
     }
   }

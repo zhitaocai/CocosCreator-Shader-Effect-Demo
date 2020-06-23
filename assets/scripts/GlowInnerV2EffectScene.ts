@@ -114,14 +114,24 @@ export default class GlowInnerV2EffectScene extends cc.Component {
     }) {
         this._scrollView.content.children.forEach((childNode) => {
             childNode.getComponents(cc.RenderComponent).forEach((renderComponent) => {
-                let spriteFrameRect = (<cc.Sprite>renderComponent).spriteFrame.getRect();
-                let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("spriteWidth", spriteFrameRect.width);
-                material.setProperty("spriteHeight", spriteFrameRect.height);
-                material.setProperty("glowRange", param.glowRange);
-                material.setProperty("glowColor", param.glowColor);
-                material.setProperty("glowThreshold", param.glowThreshold);
-                renderComponent.setMaterial(0, material);
+                if (renderComponent instanceof cc.Sprite) {
+                    let spriteFrameRect = (<cc.Sprite>renderComponent).spriteFrame.getRect();
+                    let material: cc.Material = renderComponent.getMaterial(0);
+                    material.setProperty("spriteWidth", spriteFrameRect.width);
+                    material.setProperty("spriteHeight", spriteFrameRect.height);
+                    material.setProperty("glowRange", param.glowRange);
+                    material.setProperty("glowColor", param.glowColor);
+                    material.setProperty("glowThreshold", param.glowThreshold);
+                    renderComponent.setMaterial(0, material);
+                } else {
+                    let material: cc.Material = renderComponent.getMaterial(0);
+                    material.setProperty("spriteWidth", childNode.width);
+                    material.setProperty("spriteHeight", childNode.height);
+                    material.setProperty("glowRange", param.glowRange);
+                    material.setProperty("glowColor", param.glowColor);
+                    material.setProperty("glowThreshold", param.glowThreshold);
+                    renderComponent.setMaterial(0, material);
+                }
             });
         });
     }

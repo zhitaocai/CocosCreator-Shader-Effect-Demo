@@ -16,12 +16,11 @@ CCEffect %{
         texture: { value: white }
         alphaThreshold: { value: 0.5 }
         # 自定义参数
-        # 发光颜色
         glowColor: { 
           value: [1.0, 1.0, 0.0, 1.0], 
           editor: { 
             type: color,
-            tooltip: "发光颜色"
+            tooltip: "发光颜色（RGBA）"
           } 
         } 
         spriteWidth: { 
