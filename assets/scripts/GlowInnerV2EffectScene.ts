@@ -23,6 +23,7 @@ export default class GlowInnerV2EffectScene extends cc.Component {
     private _scrollView: cc.ScrollView = null;
 
     onLoad() {
+        cc.dynamicAtlasManager.enabled = false;
         this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
         this._redSliderLabel = cc.find("Canvas/Content/Sliders/ColorRedSlider/ValueLabel").getComponent(cc.Label);
 
