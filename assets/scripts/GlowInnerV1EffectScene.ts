@@ -74,8 +74,9 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._blueSliderLabel.string = `${this._blueSlider.progress.toFixed(2)} | ${Math.round(255 * this._blueSlider.progress)}`;
         this._alphaSliderLabel.string = `${this._alphaSlider.progress.toFixed(2)} | ${Math.round(255 * this._alphaSlider.progress)}`;
 
-        let realGlowWidthProgress = this._glowWidthSlider.progress * 200;
-        this._glowWidthSliderLabel.string = `${realGlowWidthProgress.toFixed(0)}`;
+        // 这里为约束一下值发光宽度值在 [0.0, 0.1] 因为 0.1+ 之后的效果可能不明显，也可以自己尝试修改
+        let realGlowWidthProgress = this._glowWidthSlider.progress * 0.2;
+        this._glowWidthSliderLabel.string = `${realGlowWidthProgress.toFixed(2)}`;
 
         // 这里为约束一下值发光阈值值在 [0.0, 0.5] 因为 0.5+ 之后的效果可能就是其他效果，也可以自己修改这里
         // let realGlowThresholdProgress = this._glowThresholdSlider.progress * 0.5;
@@ -85,7 +86,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         // 更新材质
         this._updateRenderComponentMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
-            glowRange: realGlowWidthProgress,
+            glowColorSize: realGlowWidthProgress,
             glowThreshold: realGlowThresholdProgress,
         });
     }
@@ -99,9 +100,9 @@ export default class GlowInnerEffectScene extends cc.Component {
      */
     private _updateRenderComponentMaterial(param: {
         /**
-         * 发光宽度（px）
+         * 发光宽度 [0.0, 1.0]
          */
-        glowRange: number;
+        glowColorSize: number;
 
         /**
          * 发光颜色 [0.0, 1.0]
@@ -115,11 +116,8 @@ export default class GlowInnerEffectScene extends cc.Component {
     }) {
         this._scrollView.content.children.forEach((childNode) => {
             childNode.getComponents(cc.RenderComponent).forEach((renderComponent) => {
-                let spriteFrameRect = (<cc.Sprite>renderComponent).spriteFrame.getRect();
                 let material: cc.Material = renderComponent.getMaterial(0);
-                material.setProperty("spriteWidth", spriteFrameRect.width);
-                material.setProperty("spriteHeight", spriteFrameRect.height);
-                material.setProperty("glowRange", param.glowRange);
+                material.setProperty("glowColorSize", param.glowColorSize);
                 material.setProperty("glowColor", param.glowColor);
                 material.setProperty("glowThreshold", param.glowThreshold);
                 renderComponent.setMaterial(0, material);
