@@ -1,6 +1,6 @@
 {
   "__type__": "cc.Material",
-  "_name": "New Material",
+  "_name": "sprite-glow-inner-v2",
   "_objFlags": 0,
   "_native": "",
   "_effectAsset": {
@@ -12,6 +12,16 @@
       "defines": {
         "USE_TEXTURE": true,
         "SHOW_INNER_GLOW": true
+      },
+      "props": {
+        "glowColorSize": 0.1,
+        "glowColor": {
+          "__type__": "cc.Color",
+          "r": 255,
+          "g": 0,
+          "b": 87,
+          "a": 255
+        }
       }
     }
   }

@@ -78,13 +78,13 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 124
-      },
-      {
-        "__id__": 125
-      },
-      {
         "__id__": 126
+      },
+      {
+        "__id__": 127
+      },
+      {
+        "__id__": 128
       }
     ],
     "_prefab": null,
@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        399.23771114462625,
+        415.97635840214735,
         0,
         0,
         0,
@@ -254,7 +254,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 123
+        "__id__": 125
       }
     ],
     "_prefab": null,
@@ -5178,15 +5178,18 @@
       },
       {
         "__id__": 119
+      },
+      {
+        "__id__": 121
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 121
+        "__id__": 123
       },
       {
-        "__id__": 122
+        "__id__": 124
       }
     ],
     "_prefab": null,
@@ -5201,7 +5204,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 442
+      "height": 141.29999999999998
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -5239,7 +5242,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "cocos_logo",
+    "_name": "shark_1",
     "_objFlags": 0,
     "_parent": {
       "__id__": 114
@@ -5249,6 +5252,100 @@
     "_components": [
       {
         "__id__": 116
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 553,
+      "height": 471
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        -70.64999999999999,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0.3,
+        0.3,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "90jOWIi0BE+aHDVAvj/lOv"
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 115
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "ed801db5-01ea-4505-b505-e661a3f1bb07"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "0e41233e-c8d7-4f37-b2c2-60f41472887d"
+    },
+    "_type": 0,
+    "_sizeMode": 1,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_atlas": null,
+    "_id": "05uYrlNcNInp1I5l0tPn9S"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "cocos_logo",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 114
+    },
+    "_children": [],
+    "_active": false,
+    "_components": [
+      {
+        "__id__": 118
       }
     ],
     "_prefab": null,
@@ -5275,7 +5372,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -135,
+        -312.29999999999995,
         0,
         0,
         0,
@@ -5304,7 +5401,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 115
+      "__id__": 117
     },
     "_enabled": true,
     "_materials": [
@@ -5339,10 +5436,10 @@
       "__id__": 114
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
-        "__id__": 118
+        "__id__": 120
       }
     ],
     "_prefab": null,
@@ -5369,7 +5466,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -336,
+        -543.3,
         0,
         0,
         0,
@@ -5398,7 +5495,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 117
+      "__id__": 119
     },
     "_enabled": true,
     "_materials": [
@@ -5433,10 +5530,10 @@
       "__id__": 114
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
-        "__id__": 120
+        "__id__": 122
       }
     ],
     "_prefab": null,
@@ -5463,7 +5560,7 @@
       "ctor": "Float64Array",
       "array": [
         0,
-        -422,
+        -659.3,
         0,
         0,
         0,
@@ -5492,7 +5589,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 119
+      "__id__": 121
     },
     "_enabled": true,
     "_materials": [
@@ -5559,7 +5656,7 @@
     "_layoutSize": {
       "__type__": "cc.Size",
       "width": 384,
-      "height": 442
+      "height": 141.29999999999998
     },
     "_resize": 1,
     "_N$layoutType": 2,
@@ -5577,7 +5674,7 @@
     "_N$spacingY": 36,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
-    "_N$affectedByScale": false,
+    "_N$affectedByScale": true,
     "_id": "ff9z0nF9BGm5zFMuGhj1jt"
   },
   {
