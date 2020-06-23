@@ -20,9 +20,10 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _glowThresholdSlider: cc.Slider = null;
     private _glowThresholdSliderLabel: cc.Label = null;
 
-    private _examplesParentNode: cc.Node = null;
+    private _scrollView: cc.ScrollView = null;
 
     onLoad() {
+        cc.dynamicAtlasManager.enabled = false;
         this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
         this._redSliderLabel = cc.find("Canvas/Content/Sliders/ColorRedSlider/ValueLabel").getComponent(cc.Label);
 
@@ -41,7 +42,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._glowThresholdSlider = cc.find("Canvas/Content/Sliders/GlowThresholdSlider/Slider").getComponent(cc.Slider);
         this._glowThresholdSliderLabel = cc.find("Canvas/Content/Sliders/GlowThresholdSlider/ValueLabel").getComponent(cc.Label);
 
-        this._examplesParentNode = cc.find("Canvas/Content/Examples");
+        this._scrollView = cc.find("Canvas/Content/ScrollView").getComponent(cc.ScrollView);
     }
 
     onEnable() {
@@ -74,7 +75,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._alphaSliderLabel.string = `${this._alphaSlider.progress.toFixed(2)} | ${Math.round(255 * this._alphaSlider.progress)}`;
 
         // 这里为约束一下值发光宽度值在 [0.0, 0.1] 因为 0.1+ 之后的效果可能不明显，也可以自己尝试修改
-        let realGlowWidthProgress = this._glowWidthSlider.progress * 0.1;
+        let realGlowWidthProgress = this._glowWidthSlider.progress * 0.2;
         this._glowWidthSliderLabel.string = `${realGlowWidthProgress.toFixed(2)}`;
 
         // 这里为约束一下值发光阈值值在 [0.0, 0.5] 因为 0.5+ 之后的效果可能就是其他效果，也可以自己修改这里
@@ -86,7 +87,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._updateRenderComponentMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
             glowColorSize: realGlowWidthProgress,
-            glowThreshold: realGlowThresholdProgress
+            glowThreshold: realGlowThresholdProgress,
         });
     }
 
@@ -113,8 +114,8 @@ export default class GlowInnerEffectScene extends cc.Component {
          */
         glowThreshold: number;
     }) {
-        this._examplesParentNode.children.forEach(childNode => {
-            childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
+        this._scrollView.content.children.forEach((childNode) => {
+            childNode.getComponents(cc.RenderComponent).forEach((renderComponent) => {
                 let material: cc.Material = renderComponent.getMaterial(0);
                 material.setProperty("glowColorSize", param.glowColorSize);
                 material.setProperty("glowColor", param.glowColor);
