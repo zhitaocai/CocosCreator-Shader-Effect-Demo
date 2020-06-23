@@ -86,7 +86,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._updateRenderComponentMaterial({
             glowColor: cc.v4(this._redSlider.progress, this._greenSlider.progress, this._blueSlider.progress, this._alphaSlider.progress),
             glowColorSize: realGlowWidthProgress,
-            glowThreshold: realGlowThresholdProgress
+            glowThreshold: realGlowThresholdProgress,
         });
     }
 
@@ -113,9 +113,12 @@ export default class GlowInnerEffectScene extends cc.Component {
          */
         glowThreshold: number;
     }) {
-        this._examplesParentNode.children.forEach(childNode => {
-            childNode.getComponents(cc.RenderComponent).forEach(renderComponent => {
+        this._examplesParentNode.children.forEach((childNode) => {
+            childNode.getComponents(cc.RenderComponent).forEach((renderComponent) => {
+                let spriteFrameRect = (<cc.Sprite>renderComponent).spriteFrame.getRect();
                 let material: cc.Material = renderComponent.getMaterial(0);
+                material.setProperty("spriteWidth", spriteFrameRect.width);
+                material.setProperty("spriteHeight", spriteFrameRect.height);
                 material.setProperty("glowColorSize", param.glowColorSize);
                 material.setProperty("glowColor", param.glowColor);
                 material.setProperty("glowThreshold", param.glowThreshold);

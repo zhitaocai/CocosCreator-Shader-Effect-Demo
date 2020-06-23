@@ -14,7 +14,7 @@
         "SHOW_INNER_GLOW": true
       },
       "props": {
-        "glowColorSize": 0.1,
+        "glowColorSize": 0.01,
         "glowColor": {
           "__type__": "cc.Color",
           "r": 255,

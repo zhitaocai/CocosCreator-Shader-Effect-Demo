@@ -22,7 +22,19 @@ CCEffect %{
             tooltip: "发光颜色"
           } 
         } 
-        # 发光宽度
+        spriteWidth: { 
+          value: 500,
+          editor: {
+            tooltip: "纹理宽度"
+          }
+        }
+        spriteHeight: { 
+          value: 500,
+          editor: {
+            tooltip: "纹理高度"
+          }
+        }
+        # 发光宽度（相对于宽度）
         glowColorSize: { 
           value: 0.2,
           editor: {
@@ -95,10 +107,19 @@ CCProgram fs %{
   uniform glow {
     // 发光颜色
     vec4 glowColor;
+
+    // 纹理宽度（px）
+    float spriteWidth;
+
+    // 纹理高度（px）
+    float spriteHeight;
+
     // 发光范围
     float glowColorSize;
+
     // 发光阈值
     float glowThreshold;
+
     // 特别地，必须是 vec4 先于 float 声明
   };
 
@@ -136,7 +157,11 @@ CCProgram fs %{
     // 角度转弧度，公式为：弧度 = 角度 * (pi / 180)
     // float radian = angle * 0.01745329252; // 这个浮点数是 pi / 180
     float radian = radians(angle);
-    vec4 color = getTextureColor(texture, v_uv0 + vec2(dist * cos(radian), dist * sin(radian))); 
+    float width = dist;
+    float height = width / (spriteWidth / spriteHeight);
+    float dist_fixed = sqrt(pow(width, 2.0) + pow(height, 2.0)); 
+    vec4 color = getTextureColor(texture, v_uv0 + vec2(dist_fixed * cos(radian), dist_fixed * sin(radian))); 
+    // vec4 color = getTextureColor(texture, v_uv0 + vec2(dist * cos(radian), dist * sin(radian))); 
     return color.a;
   }
 
