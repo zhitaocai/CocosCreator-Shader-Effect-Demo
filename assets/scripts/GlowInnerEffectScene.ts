@@ -20,7 +20,7 @@ export default class GlowInnerEffectScene extends cc.Component {
     private _glowThresholdSlider: cc.Slider = null;
     private _glowThresholdSliderLabel: cc.Label = null;
 
-    private _examplesParentNode: cc.Node = null;
+    private _scrollView: cc.ScrollView = null;
 
     onLoad() {
         this._redSlider = cc.find("Canvas/Content/Sliders/ColorRedSlider/Slider").getComponent(cc.Slider);
@@ -41,7 +41,7 @@ export default class GlowInnerEffectScene extends cc.Component {
         this._glowThresholdSlider = cc.find("Canvas/Content/Sliders/GlowThresholdSlider/Slider").getComponent(cc.Slider);
         this._glowThresholdSliderLabel = cc.find("Canvas/Content/Sliders/GlowThresholdSlider/ValueLabel").getComponent(cc.Label);
 
-        this._examplesParentNode = cc.find("Canvas/Content/Examples");
+        this._scrollView = cc.find("Canvas/Content/ScrollView").getComponent(cc.ScrollView);
     }
 
     onEnable() {
@@ -113,7 +113,7 @@ export default class GlowInnerEffectScene extends cc.Component {
          */
         glowThreshold: number;
     }) {
-        this._examplesParentNode.children.forEach((childNode) => {
+        this._scrollView.content.children.forEach((childNode) => {
             childNode.getComponents(cc.RenderComponent).forEach((renderComponent) => {
                 let spriteFrameRect = (<cc.Sprite>renderComponent).spriteFrame.getRect();
                 let material: cc.Material = renderComponent.getMaterial(0);
