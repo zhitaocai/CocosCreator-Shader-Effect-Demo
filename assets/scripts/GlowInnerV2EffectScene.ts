@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class GlowInnerEffectScene extends cc.Component {
+export default class GlowInnerV2EffectScene extends cc.Component {
     private _redSlider: cc.Slider = null;
     private _redSliderLabel: cc.Label = null;
 

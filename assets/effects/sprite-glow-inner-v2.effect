@@ -1,4 +1,6 @@
-// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+// 相比起 v1 版本的变更
+//
+// 1. 切换了采样算法，由原来圆采样，改为矩形采样，减少大量三角函数运算，在保持差不多效果的前提下，性能得到大幅提升
 
 CCEffect %{
   techniques:
@@ -25,21 +27,19 @@ CCEffect %{
         spriteWidth: { 
           value: 500,
           editor: {
-            tooltip: "纹理宽度"
+            tooltip: "纹理宽度（px）"
           }
         }
         spriteHeight: { 
           value: 500,
           editor: {
-            tooltip: "纹理高度"
+            tooltip: "纹理高度（px）"
           }
         }
-        # 发光宽度（相对于宽度）
-        glowColorSize: { 
-          value: 0.2,
+        glowRange: { 
+          value: 20,
           editor: {
-            tooltip: "发光宽度",
-            range: [0.0, 1.0],
+            tooltip: "内发光范围（px）"
           }
         }
         # 发光透明度阈值
@@ -48,7 +48,7 @@ CCEffect %{
         glowThreshold: {
           value: 0.1,
           editor: {
-            tooltip: "发光阈值",
+            tooltip: "发光阈值（只有超过这个透明度的点才会发光）",
             range: [0.0, 1.0]
           }
         }
@@ -117,8 +117,8 @@ CCProgram fs %{
     // 纹理高度（px）
     float spriteHeight;
 
-    // 发光范围
-    float glowColorSize;
+    // 内发光范围（px）
+    float glowRange;
 
     // 发光阈值
     float glowThreshold;
@@ -152,7 +152,7 @@ CCProgram fs %{
    */
   float getGlowAlpha() {
     // 如果发光宽度为0，直接返回0.0透明度，减少计算量
-    if (glowColorSize == 0.0) {
+    if (glowRange == 0.0) {
       return 0.0;
     }
 
@@ -166,8 +166,8 @@ CCProgram fs %{
     } 
 
     // 每一圈的对应的步长
-    float per_step_x = (1.0 / spriteWidth) * (glowColorSize * spriteWidth / range);
-    float per_step_y = (1.0 / spriteHeight) * (glowColorSize * spriteHeight / range);
+    float per_step_x = (1.0 / spriteWidth) * (glowRange / range);
+    float per_step_y = (1.0 / spriteHeight) * (glowRange / range);
 
     // 取样周边一定范围透明度
     float totalAlpha = 0.0;
@@ -216,7 +216,7 @@ CCProgram fs %{
         alpha = 1.0 - alpha;
 
         // 给点调料，让靠近边缘的更加亮
-        alpha = -1.0 * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) * (alpha - 1.0) + 1.0;
+        alpha = -1.0 * pow((alpha - 1.0), 4.0) + 1.0;
       }
       // 源颜色（内发光）
       vec4 color_src = glowColor * alpha;
